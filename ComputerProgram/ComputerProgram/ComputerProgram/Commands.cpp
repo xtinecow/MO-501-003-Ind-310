@@ -16,7 +16,7 @@ char CheckKeyboard(void)
 	{
 		command = CommandList[i];
 		keyState = GetKeyState(command);
-		if (keyState & 0x8000) // Key Toggled
+		if (keyState & 0x8000) // Key Pressed
 			return command;
 	}
 	return 0; // returns 0 if no keys are pressed
