@@ -2,6 +2,10 @@
 //#include "Serial.h"
 #include "ComputerProgram.h"
 
+// MODIFIED by Kael because some it didn't seem to work. Followed Windows instructions on some of these functions found here: 
+// https://msdn.microsoft.com/en-us/library/windows/desktop/aa363201(v=vs.85).aspx
+// https://msdn.microsoft.com/en-us/library/windows/desktop/aa363201(v=vs.85).aspx
+
 CSerial::CSerial()
 {
 
@@ -26,10 +30,48 @@ BOOL CSerial::Open( int nPort, int nBaud )
 
 	char szPort[15];
 	char szComParams[50];
+	std::string temp; 
+	int i; 
 	DCB dcb;
 
-	wsprintf( (LPWSTR)szPort, (LPCWSTR)"COM%d", nPort );
-	m_hIDComDev = CreateFile((LPCWSTR)szPort, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED, NULL );
+
+
+
+	// wsprintf( (LPWSTR)szPort, (LPCWSTR)"COM%d", nPort );
+	// Seems to be broken so replacing with my own code 
+	if (nPort < 0 || nPort > 255 || nBaud < 0 || nBaud > 921600)
+	{
+		std::cout << "Invalid Inputs. Terminating. "; 
+		exit(1);
+	}
+	else
+	{
+		temp = "COM" + std::to_string(nPort);
+		for (i = 0; i < std::size(szPort); i++)
+		{
+			szPort[i] = temp[i];
+			if (temp[i] == 0)
+				break;
+		}
+	}
+	// End of my own code
+
+
+	// Kael sub in
+	TCHAR fileName[std::size(szPort)];
+	for (i = 0; i < std::size(szPort); i++)
+	{
+		fileName[i] = (TCHAR)szPort[i];
+		if (szPort[i] == 0)
+			break;
+	}
+
+	TCHAR *namePointer = &fileName[0];
+	// Done. I know this is a very inneficient way but it works and I'll leave it at that for now. 
+
+
+	// m_hIDComDev = CreateFile((LPCWSTR)szPort, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED, NULL );
+	m_hIDComDev = CreateFile(namePointer, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
 	if( m_hIDComDev == NULL ) return( FALSE );
 
 	memset( &m_OverlappedRead, 0, sizeof( OVERLAPPED ) );
@@ -43,7 +85,19 @@ BOOL CSerial::Open( int nPort, int nBaud )
 	CommTimeOuts.WriteTotalTimeoutConstant = 5000;
 	SetCommTimeouts( m_hIDComDev, &CommTimeOuts );
 
-	wsprintf((LPWSTR)szComParams, (LPCWSTR)"COM%d:%d,n,8,1", nPort, nBaud );
+
+
+
+
+	// wsprintf((LPWSTR)szComParams, (LPCWSTR)"COM%d:%d,n,8,1", nPort, nBaud );
+	// Again, this isn't working so replacing with my own code
+	temp = "COM" + std::to_string(nPort)+":"+ std::to_string(nBaud)+",n,8,1";
+	for (i = 0; i < std::size(szComParams); i++)
+	{
+		szComParams[i] = temp[i];
+		if (temp[i] == 0)
+			break;
+	}
 
 	m_OverlappedRead.hEvent = CreateEvent( NULL, TRUE, FALSE, NULL );
 	m_OverlappedWrite.hEvent = CreateEvent( NULL, TRUE, FALSE, NULL );
@@ -52,6 +106,9 @@ BOOL CSerial::Open( int nPort, int nBaud )
 	GetCommState( m_hIDComDev, &dcb );
 	dcb.BaudRate = nBaud;
 	dcb.ByteSize = 8;
+
+
+
 	unsigned char ucSet;
 	ucSet = (unsigned char) ( ( FC_RTSCTS & FC_DTRDSR ) != 0 );
 	ucSet = (unsigned char) ( ( FC_RTSCTS & FC_RTSCTS ) != 0 );

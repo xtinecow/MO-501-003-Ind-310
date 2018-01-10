@@ -13,11 +13,39 @@ using namespace std;
 int main(int argc, char *argv[])
 {
 	char keyboardCommand; 
-	cout << "Hello World!" << endl; 
+	int portNum; 
+	int i; 
+	CSerial serial;
 
-	if (argc == 1)
+	cout << "Please enter COMS port number of XBee Module." << endl;
+	cin >> portNum; 
+
+
+	while (portNum < 0 || portNum > 255)
 	{
-		cout << "Error. No COMS port selected. Press 'E' to exit" << endl;
+		cout << "Invalid port number entered. Please select a number between 0 and 255" << endl;
+		cin >> portNum;
+	}
+
+	if (serial.Open(portNum, XBEE_BAUDRATE))
+		cout << "Port successfully opened";
+	else
+		cout << "Failed to open port " << portNum << endl; 
+
+	//string num = to_string(50);
+	//char sizePort[15];
+	//string temp;
+	//temp = "COMS" + num;
+	//for (i = 0; i < size(sizePort); i++)
+	//{
+	//	sizePort[i] = temp[i]; 
+	//	if (temp[i] == 0)
+	//		break; 
+	//}
+	//cout << "String is " << sizePort; 
+
+
+
 		while (1)
 		{
 			while (!(keyboardCommand = CheckKeyboard())) {}; // Wait for input
@@ -30,14 +58,6 @@ int main(int argc, char *argv[])
 				Sleep(100); // Delay for a bit
 			}
 		}
-
-	}
-
-
-	int five = 5; 
-	int seven = 7; 
-
-	CSerial serial; 
 
 
 }

@@ -1,8 +1,6 @@
 // Serial.h
 
-//#include<stdio.h.>
-//#include<string.h>
-//#include<windows.h>
+
 
 #ifndef __SERIAL_H__
 #define __SERIAL_H__
