@@ -4,6 +4,7 @@
 #include<string>
 #include<windows.h>
 #include<tchar.h> 
+#include<time.h>
 
 // Serial library added from blog post
 // https://www.codeguru.com/cpp/i-n/network/serialcommunications/article.php/c2503/CSerial--A-C-Class-for-Serial-Communications.htm
@@ -15,10 +16,16 @@
 
 // Definitions
 #define XBEE_BAUDRATE 9600
+#define COMMAND_COMMODETIMEOUT "ATCT0x1770"
+#define COMMAND_FWVERSION "ATVR" 
 
 
 // Function prototypes
 
 // Commands.c
 char CheckKeyboard(void);
+void WaitForExit(void);
 
+// XBEE.cpp
+void SetATCommandMode(CSerial serial);
+void ReadFirmwareVersion(CSerial serial);

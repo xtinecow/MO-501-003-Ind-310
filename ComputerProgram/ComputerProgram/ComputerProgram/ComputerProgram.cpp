@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
 	char keyboardCommand; 
 	int portNum; 
 	int i; 
+	int nBytesSent, nBytesRead; 
 	CSerial serial;
 
 	cout << "Please enter COMS port number of XBee Module." << endl;
@@ -28,22 +29,17 @@ int main(int argc, char *argv[])
 	}
 
 	if (serial.Open(portNum, XBEE_BAUDRATE))
-		cout << "Port successfully opened";
+		cout << "Port successfully opened" << endl;
 	else
-		cout << "Failed to open port " << portNum << endl; 
+	{
+		cout << "Failed to open port " << portNum << endl;
+		WaitForExit();
+	}
 
-	//string num = to_string(50);
-	//char sizePort[15];
-	//string temp;
-	//temp = "COMS" + num;
-	//for (i = 0; i < size(sizePort); i++)
-	//{
-	//	sizePort[i] = temp[i]; 
-	//	if (temp[i] == 0)
-	//		break; 
-	//}
-	//cout << "String is " << sizePort; 
 
+
+	SetATCommandMode(serial); 
+	ReadFirmwareVersion(serial); 
 
 
 		while (1)

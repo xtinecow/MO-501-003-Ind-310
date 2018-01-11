@@ -1,5 +1,6 @@
 #include "ComputerProgram.h"
 // This file will include all keyboard commands that the user can enter to affect the program
+using namespace std; 
 
 char CommandList[] = {
 'E', // Exit
@@ -20,4 +21,18 @@ char CheckKeyboard(void)
 			return command;
 	}
 	return 0; // returns 0 if no keys are pressed
+}
+
+void WaitForExit(void)
+{
+	char keyboardCommand;
+	cout << "Error detected. Please press E to exit program" << endl; 
+	while (1)
+	{
+		while (!(keyboardCommand = CheckKeyboard())) {}; // Wait for input
+		if (keyboardCommand == 'E')
+			exit(1);
+		else
+			keyboardCommand = 0;
+	}
 }
