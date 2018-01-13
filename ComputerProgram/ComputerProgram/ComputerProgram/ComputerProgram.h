@@ -17,7 +17,8 @@
 // Definitions
 #define XBEE_BAUDRATE 9600
 #define COMMAND_COMMODETIMEOUT "ATCT0x1770"
-#define COMMAND_FWVERSION "ATVR" 
+#define COMMAND_FWVERSION "ATCH" 
+#define COMMAND_APPLYCHANGE "ATAC"
 
 
 // Function prototypes
@@ -30,6 +31,7 @@ void WaitForExit(void);
 void OpenSerialPort(int portNum);
 void SetATCommandMode(void);
 void ReadFirmwareVersion(void);
+void CloseSerialPort(void); 
 
 // Setting global serial port
 extern CSerial serial;

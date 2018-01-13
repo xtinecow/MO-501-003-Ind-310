@@ -21,7 +21,7 @@ void SetATCommandMode(void)
 {
 	int nBytesSent, nBytesRead, i; 
 	clock_t timeout;
-	char response[10];
+	char response[20];
 	// Put device in command mode by sending 3 consecutive '+'commands
 	cout << "Putting module in command mode... ";
 	Sleep(1000); // wait for the required guard time (default of 1000 ms)
@@ -41,14 +41,15 @@ void SetATCommandMode(void)
 
 	// Poll for 'OK' Response 
 	cout << "Waiting for OK Response... ";
-	timeout = clock() + 2*CLOCKS_PER_SEC; // Give it 2 sec to respond
+	timeout = clock() + CLOCKS_PER_SEC; // Give it 1 sec to respond
 	nBytesRead = 0;
 	while (clock() < timeout)
 	{
-		nBytesRead = serial.ReadData(response, 2);
+		nBytesRead = serial.ReadData(response, 20);
 		if (nBytesRead)
 		{
 			cout << response[0] << response[1] << endl;
+			// nBytesRead = serial.ReadData(response, 20);
 			break; 
 		}
 	}
@@ -58,65 +59,90 @@ void SetATCommandMode(void)
 		WaitForExit();
 	}
 
-	// Set command mode timeout to max value
-	cout << "Setting command mode timeout to max value... ";
-	nBytesSent = 0;
-	nBytesSent = serial.SendData(COMMAND_COMMODETIMEOUT, strlen(COMMAND_COMMODETIMEOUT));
-	if (!nBytesSent)
-	{
-		cout << "Error writing to serial port" << endl;
-		WaitForExit();
-	}
-	cout << "done" << endl; 
+	//// Set command mode timeout to max value
+	//cout << "Setting command mode timeout to max value... ";
+	//nBytesSent = 0;
+	//nBytesSent = serial.SendData(COMMAND_COMMODETIMEOUT, strlen(COMMAND_COMMODETIMEOUT));
+	//if (!nBytesSent)
+	//{
+	//	cout << "Error writing to serial port" << endl;
+	//	WaitForExit();
+	//}
+	//cout << "done" << endl; 
 
-	cout << "Waiting fo acknowledgment... ";
-	timeout = clock() + 2 * CLOCKS_PER_SEC; // Give it 2 sec to respond
-	nBytesRead = 0;
-	while (clock() < timeout)
-	{
-		nBytesRead = serial.ReadData(response, 1);
-		if (nBytesRead)
-			break; 
-	}
-	if (!nBytesRead)
-	{
-		cout << "Error reading from serial port" << endl;
-		WaitForExit();
-	}
-	else
-		cout << "done." << endl; 
+	//cout << "Waiting for acknowledgment... ";
+	//timeout = clock() + 2 * CLOCKS_PER_SEC; // Give it 2 sec to respond
+	//nBytesRead = 0;
+	//while (clock() < timeout)
+	//{
+	//	nBytesRead = serial.ReadData(response, 1);
+	//	if (nBytesRead)
+	//		break; 
+	//}
+	//if (!nBytesRead)
+	//{
+	//	cout << "Error reading from serial port" << endl;
+	//	WaitForExit();
+	//}
+	//else
+	//	cout << "done." << endl; 
+
+	//cout << "Applying change.. ";
+	//nBytesSent = 0;
+	//nBytesSent = serial.SendData(COMMAND_APPLYCHANGE, strlen(COMMAND_APPLYCHANGE));
+	//if (!nBytesSent)
+	//{
+	//	cout << "Error writing to serial port" << endl;
+	//	WaitForExit();
+	//}
+	//cout << "done." << endl;
+
+
+
 
 }
 
 void ReadFirmwareVersion(void)
 {
-	int nBytesSent, nBytesRead; 
-	char *response = new char[2]; 
-	char message[12] = COMMAND_FWVERSION; 
+	int nBytesSent, nBytesRead, i; 
+	char message[20] = COMMAND_FWVERSION; 
+	message[strlen(COMMAND_FWVERSION)] = 13; // Append carriage return to end of command
+	 char *messagePointer = message; 
+
+
+	char response[20];
 	clock_t timeout; 
 	cout << "Reading version... ";
 	nBytesSent = 0;
-	nBytesSent = serial.SendData(COMMAND_FWVERSION, strlen(COMMAND_FWVERSION));
+	nBytesSent = serial.SendData(messagePointer, strlen(COMMAND_FWVERSION)+1);
 	if (!nBytesSent)
 	{
 		cout << "Error writing to serial port" << endl;
 		WaitForExit();
 	}
-	timeout = clock() + 2*CLOCKS_PER_SEC; // Give it 2 sec to respond
+	timeout = clock() + CLOCKS_PER_SEC; // Give it 1 sec to respond
 	nBytesRead = 0; 
 	while (clock() < timeout)
 	{
-		nBytesRead = serial.ReadData(response, 2);
+		nBytesRead = serial.ReadData(response, 20);
 		if (nBytesRead)
 		{
-			cout << response[1] << response[2] << endl;
-			delete[]response; 
+			cout << response[0] << response[1] << endl;
 			return; 
 		}
 	}
-	cout << "Message is: " << (string)message << endl; 
 	cout << "Error reading from serial port" << endl;
-	delete[]response;
 	WaitForExit();
 
+}
+
+void CloseSerialPort()
+{
+	if (serial.Close())
+		cout << "Port successfully closed" << endl;
+	else
+	{
+		cout << "Failed to close port "<< endl;
+		WaitForExit();
+	}
 }

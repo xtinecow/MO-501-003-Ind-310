@@ -163,17 +163,40 @@ BOOL CSerial::WriteCommByte( unsigned char ucByte )
 
 }
 
-int CSerial::SendData( const char *buffer, int size )
+BOOL CSerial::WriteCommMessage(char* message, int size)
+{
+	BOOL bWriteStat;
+	DWORD dwBytesWritten;
+
+
+	bWriteStat = WriteFile(m_hIDComDev, (LPSTR)message, size, &dwBytesWritten, &m_OverlappedWrite);
+	if (!bWriteStat && (GetLastError() == ERROR_IO_PENDING)) {
+		if (WaitForSingleObject(m_OverlappedWrite.hEvent, 1000)) dwBytesWritten = 0;
+		else {
+			GetOverlappedResult(m_hIDComDev, &m_OverlappedWrite, &dwBytesWritten, FALSE);
+			m_OverlappedWrite.Offset += dwBytesWritten;
+		}
+	}
+
+	return(TRUE);
+}
+
+
+int CSerial::SendData( char *buffer, int size )
 {
 
 	if( !m_bOpened || m_hIDComDev == NULL ) return( 0 );
 
 	DWORD dwBytesWritten = 0;
 	int i;
-	for( i=0; i<size; i++ ){
-		WriteCommByte( buffer[i] );
-		dwBytesWritten++;
-		}
+
+	// Kael - Change this to send full package in one go rather than one byte at a time
+	//for( i=0; i<size; i++ ){
+	//	WriteCommByte( buffer[i] );
+	//	dwBytesWritten++;
+	//	}
+	WriteCommMessage(buffer, size);
+	dwBytesWritten = size; 
 
 	return( (int) dwBytesWritten );
 

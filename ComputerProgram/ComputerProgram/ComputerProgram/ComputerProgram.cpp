@@ -27,6 +27,9 @@ int main(int argc, char *argv[])
 	 SetATCommandMode(); 
 	 ReadFirmwareVersion(); 
 
+	 // Close port
+	 CloseSerialPort(); 
+
 		while (1)
 		{
 			while (!(keyboardCommand = CheckKeyboard())) {}; // Wait for input

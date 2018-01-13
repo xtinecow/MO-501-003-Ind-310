@@ -26,13 +26,14 @@ public:
 	BOOL Close( void );
 
 	int ReadData( void *, int );
-	int SendData( const char *, int );
+	int SendData( char *, int );
 	int ReadDataWaiting( void );
 
 	BOOL IsOpened( void ){ return( m_bOpened ); }
 
 protected:
 	BOOL WriteCommByte( unsigned char );
+	BOOL WriteCommMessage(char* message, int size);
 
 	HANDLE m_hIDComDev;
 	OVERLAPPED m_OverlappedRead, m_OverlappedWrite;
