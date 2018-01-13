@@ -27,5 +27,9 @@ char CheckKeyboard(void);
 void WaitForExit(void);
 
 // XBEE.cpp
-void SetATCommandMode(CSerial serial);
-void ReadFirmwareVersion(CSerial serial);
+void OpenSerialPort(int portNum);
+void SetATCommandMode(void);
+void ReadFirmwareVersion(void);
+
+// Setting global serial port
+extern CSerial serial;

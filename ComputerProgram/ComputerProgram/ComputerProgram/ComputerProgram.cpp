@@ -3,21 +3,16 @@
 // This program will be responsible for finding all nodes within the network and pulling them for their respective tables
 
 
-
-
 #include "ComputerProgram.h"
 using namespace std; 
 
-// Input arguments will be as follows:
-// 0: COM Port 
+
 int main(int argc, char *argv[])
 {
+	int portNum;
 	char keyboardCommand; 
-	int portNum; 
-	int i; 
-	int nBytesSent, nBytesRead; 
-	CSerial serial;
 
+	// Prompt user for port number
 	cout << "Please enter COMS port number of XBee Module." << endl;
 	cin >> portNum; 
 
@@ -28,19 +23,9 @@ int main(int argc, char *argv[])
 		cin >> portNum;
 	}
 
-	if (serial.Open(portNum, XBEE_BAUDRATE))
-		cout << "Port successfully opened" << endl;
-	else
-	{
-		cout << "Failed to open port " << portNum << endl;
-		WaitForExit();
-	}
-
-
-
-	SetATCommandMode(serial); 
-	ReadFirmwareVersion(serial); 
-
+	 OpenSerialPort(portNum); 
+	 SetATCommandMode(); 
+	 ReadFirmwareVersion(); 
 
 		while (1)
 		{
