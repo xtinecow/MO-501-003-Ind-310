@@ -16,9 +16,6 @@
 
 // Definitions
 #define XBEE_BAUDRATE 9600
-#define COMMAND_COMMODETIMEOUT "ATCT0x1770"
-#define COMMAND_FWVERSION "ATCH" 
-#define COMMAND_APPLYCHANGE "ATAC"
 
 
 // Function prototypes
