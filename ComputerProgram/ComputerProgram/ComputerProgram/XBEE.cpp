@@ -46,13 +46,13 @@ void SetATCommandMode(void)
 	nBytesRead = 0;
 	while (clock() < timeout)
 	{
-		nBytesRead = serial.ReadData(response, 20);
-		if (nBytesRead)
+		nBytesRead += serial.ReadData(response, 20);
+		if (nBytesRead == 3)
 		{
 			cout << response[0] << response[1] << endl;
-			// nBytesRead = serial.ReadData(response, 20);
 			break; 
 		}
+		Sleep(100); // Only pull every 100 ms
 	}
 	if (!nBytesRead)
 	{
@@ -89,13 +89,13 @@ void SetATCommandMode(void)
 	nBytesRead = 0;
 	while (clock() < timeout)
 	{
-		nBytesRead = serial.ReadData(response, 20);
-		if (nBytesRead)
+		nBytesRead += serial.ReadData(response, 20);
+		if (nBytesRead == 3)
 		{
 			cout << response[0] << response[1] << endl;
-			// nBytesRead = serial.ReadData(response, 20);
 			break;
 		}
+		Sleep(100); // Only pull every 100 ms
 	}
 	if (!nBytesRead)
 	{
@@ -126,12 +126,12 @@ void SetATCommandMode(void)
 	while (clock() < timeout)
 	{
 		nBytesRead = serial.ReadData(response, 20);
-		if (nBytesRead)
+		if (nBytesRead == 3)
 		{
 			cout << response[0] << response[1] << endl;
-			// nBytesRead = serial.ReadData(response, 20);
 			break;
 		}
+		Sleep(100); // Only pull every 100 ms
 	}
 	if (!nBytesRead)
 	{
@@ -145,18 +145,16 @@ void SetATCommandMode(void)
 
 void ReadFirmwareVersion(void)
 {
-	int nBytesSent, nBytesRead, i; 
-	char command[20]; 
+	int nBytesSent, nBytesRead;
+	char command[20];
+	char response[20];
+	clock_t timeout;
 
 	command[0] = 'A'; 
 	command[1] = 'T';
 	command[2] = 'V';
 	command[3] = 'R'; 
 	command[4] = 13; // Add carriage return 
-
-
-	char response[20];
-	clock_t timeout; 
 	cout << "Reading firmware version... ";
 	nBytesSent = 0;
 	nBytesSent = serial.SendData(command, 5);
@@ -169,12 +167,13 @@ void ReadFirmwareVersion(void)
 	nBytesRead = 0; 
 	while (clock() < timeout)
 	{
-		nBytesRead = serial.ReadData(response, 20);
-		if (nBytesRead)
+		nBytesRead += serial.ReadData(response, 20);
+		if (nBytesRead == 5)
 		{
 			cout << "0x" << response[0] << response[1] << response[2] << response[3] << endl; 
 			return; 
 		}
+		Sleep(100); // Only pull every 100 ms
 	}
 	cout << "Error reading from serial port" << endl;
 	WaitForExit();

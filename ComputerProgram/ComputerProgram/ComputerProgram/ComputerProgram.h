@@ -14,11 +14,20 @@
 // This seems to compile now. The original files were kept under ComputerProgram/Serial Class for future reference
 #include "Serial.h"
 
-// Definitions
+///////////////// Definitions
 #define XBEE_BAUDRATE 9600
+#define MAX_NUM_NODES 6
+
+//2 byte 0xfffe
+//2 byte parent network address 
+//1 byte device type
+//2 byte profile ID
+//2 byte manufacturer ID
+//1 byte RSSI
+#define ND_RESPONSE_SIZE 11 
 
 
-// Function prototypes
+///////////////// Function prototypes
 
 // Commands.c
 char CheckKeyboard(void);
@@ -30,5 +39,17 @@ void SetATCommandMode(void);
 void ReadFirmwareVersion(void);
 void CloseSerialPort(void); 
 
-// Setting global serial port
+// Network.cpp
+void NetworkDiscover(void);
+
+/////////////// Structure for node table 
+typedef struct
+{
+	int ID; 
+
+}NodeEntry_t;
+
+
+/////////////// Globals
 extern CSerial serial;
+extern NodeEntry_t NodeList[MAX_NUM_NODES];

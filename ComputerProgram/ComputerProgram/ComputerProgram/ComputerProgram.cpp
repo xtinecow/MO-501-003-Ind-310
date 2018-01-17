@@ -27,6 +27,8 @@ int main(int argc, char *argv[])
 	 SetATCommandMode(); 
 	 ReadFirmwareVersion(); 
 
+	 NetworkDiscover(); 
+
 	 // Close port
 	 CloseSerialPort(); 
 
