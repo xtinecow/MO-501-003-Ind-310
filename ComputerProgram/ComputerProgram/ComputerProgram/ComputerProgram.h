@@ -5,6 +5,7 @@
 #include<windows.h>
 #include<tchar.h> 
 #include<time.h>
+#include<stdlib.h>
 
 // Serial library added from blog post
 // https://www.codeguru.com/cpp/i-n/network/serialcommunications/article.php/c2503/CSerial--A-C-Class-for-Serial-Communications.htm
@@ -29,11 +30,13 @@
 // Status: Reserved - 00 
 // Profile ID - C105
 // Manufacturer ID - 101E
+// RSSI
 // One last carriage return 
+
 
 // Each line is terminated by a carriage return which takes one byte.
 // returned in ASCII so each byte takes two chars. 
-#define ND_RESPONSE_SIZE 47
+#define ND_RESPONSE_SIZE 50
 
 
 ///////////////// Function prototypes
@@ -55,6 +58,7 @@ void NetworkDiscover(void);
 struct NodeEntry
 {
 	char MAC[16]; //MAC stored in chars so each byte shows up as 2 chars (just how it's returned, can change later)
+	int RSSI; // Only trying this for now. Will eventually have to be table of neighbors. 
 
 };
 

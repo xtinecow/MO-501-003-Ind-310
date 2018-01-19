@@ -31,10 +31,11 @@ int main(int argc, char *argv[])
 
 	 // Close port
 	 CloseSerialPort();  
-	 cout << "Node 0 has MAC: "; 
+	 cout << "Node 0 has MAC: " << endl; 
 	 for (i = 0; i < 8; i++)
 		 cout << NodeList[0].MAC[2 * i] << NodeList[0].MAC[2 * i + 1] << ":";
 	 cout << endl; 
+	 cout << "RSSI of last hop (Node 0): " << NodeList[0].RSSI << endl; 
 
 		while (1)
 		{
