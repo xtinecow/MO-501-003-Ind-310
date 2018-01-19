@@ -4,15 +4,16 @@
 #include"ComputerProgram.h"
 using namespace std;
 
-NodeEntry_t NodeList[MAX_NUM_NODES];
+NodeEntry NodeList[MAX_NUM_NODES];
 
 // Find all nodes in the network and fill network table with that information
 void NetworkDiscover(void)
 {
-	int nBytesSent, nBytesRead;
+	int nBytesSent, nBytesRead, i;
 	char command[20];
-	char response[ND_RESPONSE_SIZE]; 
+	char response[MAX_NUM_NODES*ND_RESPONSE_SIZE];
 	clock_t timeout;
+	int macIndex, responseIndex; 
 
 
 	command[0] = 'A';
@@ -29,21 +30,24 @@ void NetworkDiscover(void)
 		cout << "Error writing to serial port" << endl;
 		WaitForExit();
 	}
-	timeout = clock() + 15*CLOCKS_PER_SEC; // Give it 15 sec to respond
+	timeout = clock() + 10*CLOCKS_PER_SEC; // Give it 15 sec to respond
 	nBytesRead = 0;
 	while (clock() < timeout)
 	{
-		nBytesRead += serial.ReadData(response, ND_RESPONSE_SIZE);
-		if (nBytesRead >= (ND_RESPONSE_SIZE-1))
-		{
-			cout << "0x" << response[0] << response[1] << response[2] << response[3] << endl;
-			cout << "0x" << response[4] << response[5] << response[6] << response[7] << endl;
-			cout << "0x" << response[8] << response[9] << endl;
+		nBytesRead += serial.ReadData(response,ND_RESPONSE_SIZE);
+		if (nBytesRead >= ND_RESPONSE_SIZE)
 			break; 
-		}
-		Sleep(100); // Only pull every 100 ms
-	}
-	cout << nBytesRead << " bytes read" << endl; 
+		Sleep(100); // Only poll every 100 ms
+	} 
 	if (!nBytesRead)
 		cout << "No Response" << endl; 
+	else
+	{
+		cout << nBytesRead << " bytes read" << endl; 
+		for (i = 0; i < 8; i++)
+			NodeList[0].MAC[i] = response[5+i]; // Copy first half
+		for (i = 0; i < 8; i++)
+			NodeList[0].MAC[8+i] = response[14+i]; // Skip carriage return and copy second half
+
+	}
 }

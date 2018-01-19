@@ -18,13 +18,22 @@
 #define XBEE_BAUDRATE 9600
 #define MAX_NUM_NODES 6
 
-//2 byte 0xfffe
-//2 byte parent network address 
-//1 byte device type
-//2 byte profile ID
-//2 byte manufacturer ID
-//1 byte RSSI
-#define ND_RESPONSE_SIZE 11 
+// Format is as follows:
+// First Half: 
+// FFFE
+// MAC (first 4 bytes)
+// MAC (second 4 bytes)
+// (space)
+// FFFE
+// Device Type: Router - 01
+// Status: Reserved - 00 
+// Profile ID - C105
+// Manufacturer ID - 101E
+// One last carriage return 
+
+// Each line is terminated by a carriage return which takes one byte.
+// returned in ASCII so each byte takes two chars. 
+#define ND_RESPONSE_SIZE 47
 
 
 ///////////////// Function prototypes
@@ -43,13 +52,13 @@ void CloseSerialPort(void);
 void NetworkDiscover(void);
 
 /////////////// Structure for node table 
-typedef struct
+struct NodeEntry
 {
-	int ID; 
+	char MAC[16]; //MAC stored in chars so each byte shows up as 2 chars (just how it's returned, can change later)
 
-}NodeEntry_t;
+};
 
 
 /////////////// Globals
 extern CSerial serial;
-extern NodeEntry_t NodeList[MAX_NUM_NODES];
+extern NodeEntry NodeList[MAX_NUM_NODES];
