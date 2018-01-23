@@ -1,0 +1,13 @@
+Use the following setup to debug serial interface on linux. 
+
+run line sudo ./interceptty -s 'ispeed 9600 ospeed 9600' /dev/ttyUSB0 /dev/interceptPtty 
+
+This will monitor USB serial port 0 and create a new tty called interceptPtty. 
+Connect to this to send out serial commands to USB
+i.e. change /dev/ttyUSB0 to /dev/interceptPtty in application
+
+You can test this using the minicom app:
+sudo minicom -s to open settings
+
+sudo minicom -c on to open app and start sending out serial messages
+Make sure the minicom is connected to the interceptPtty
