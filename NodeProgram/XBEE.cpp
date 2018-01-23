@@ -24,7 +24,7 @@ void SetATCommandMode (void)
 
     int counter =0;
 
-    std::cout << "Putting module in command BLAH mode... ";
+    std::cout << "Putting module in command mode... ";
     usleep(1000000); // wait for required guard time (1 000 000 microseconds)
 
     for (i=0; i<3; i++)
@@ -40,26 +40,8 @@ void SetATCommandMode (void)
     std::cout << "Waiting for OK Response... ";
     timeout = clock() + 0.5*CLOCKS_PER_SEC; // Give it 1 sec to respond
 
- //   while(clock() < timeout)
-usleep(5000000);
- serial.read(response, 3);
- while(counter < 10)
-    {
-    std::cout << timeout - clock() << std::endl;
-        //serial.read(response, 20);
-//        if(response[0]=='O')
-//        { std::cout << "Yay!!!!!!";
-//        break;
-//        }
-counter++;
-    }
-    std::cout << response << std::endl;
-//
-//int temp = (int)response[0];
-//    if(response[0])
-//       std::cout << "Response:"<< temp << response[0] << response[1] << response[2];
-//    else
-//        std::cout << "Error reading response" << std::endl;
-
+usleep(1000); // Wait 1ms before checking
+serial.read(response, 20);
+std::cout << response << std::endl;
 
 }
