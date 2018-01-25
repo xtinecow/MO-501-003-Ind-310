@@ -1,0 +1,13 @@
+These are the following Git commands needed:
+
+To check changes: cd to repository and enter following line: 
+git diff
+This will show all uncommitted changes. Press 'Q' to exit display. 
+
+To commit changes:
+git add file.cpp
+git commit file1.cpp file.cpp -m "Commit message"
+git pull
+git push
+
+
