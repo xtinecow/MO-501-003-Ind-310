@@ -52,15 +52,15 @@ extern "C++" {
 
             */
             enum BaudRateEnum {
-                BAUD_50    = B50,         //!< 50 baud. 
+                BAUD_50    = B50,         //!< 50 baud.
                 BAUD_75    = B75,         //!< 75 baud.
                 BAUD_110   = B110,        //!< 110 baud.
-                BAUD_134   = B134,        //!< 134.5 baud. Yes 134.5. I did not mistype that. 
+                BAUD_134   = B134,        //!< 134.5 baud. Yes 134.5. I did not mistype that.
                 BAUD_150   = B150,        //!< 150 baud.
                 BAUD_200   = B200,        //!< 200 baud.
                 BAUD_300   = B300,        //!< 300 baud.
-                BAUD_600   = B600,        //!< 600 baud. 
-                BAUD_1200  = B1200,       //!< 1200 baud. 
+                BAUD_600   = B600,        //!< 600 baud.
+                BAUD_1200  = B1200,       //!< 1200 baud.
                 BAUD_1800  = B1800,       //!< 1800 baud.
                 BAUD_2400  = B2400,       //!< 2400 baud.
                 BAUD_4800  = B4800,       //!< 4800 baud.
@@ -77,23 +77,23 @@ extern "C++" {
 
             */
             enum CharSizeEnum {
-                CHAR_SIZE_5 = CS5, //!< 5 bit characters. 
-                CHAR_SIZE_6 = CS6, //!< 6 bit characters. 
-                CHAR_SIZE_7 = CS7, //!< 7 bit characters. 
-                CHAR_SIZE_8 = CS8, //!< 8 bit characters. 
-                CHAR_SIZE_INVALID  //!< Invalid character size.  
+                CHAR_SIZE_5 = CS5, //!< 5 bit characters.
+                CHAR_SIZE_6 = CS6, //!< 6 bit characters.
+                CHAR_SIZE_7 = CS7, //!< 7 bit characters.
+                CHAR_SIZE_8 = CS8, //!< 8 bit characters.
+                CHAR_SIZE_INVALID  //!< Invalid character size.
             } ;
 
             /** The allowed values of the parity associated with the serial
                 port communications.
-	  
+
             */
             enum ParityEnum {
-                PARITY_EVEN,     //!< Even parity.  
+                PARITY_EVEN,     //!< Even parity.
                 PARITY_ODD,      //!< Odd parity.
                 PARITY_NONE,     //!< No parity i.e. parity checking disabled.
                 PARITY_INVALID   //!< Invalid parity value.
-            } ;      
+            } ;
 
             /** The values of the flow control settings for a serial
                 port.
@@ -101,9 +101,9 @@ extern "C++" {
             */
             enum FlowControlEnum {
                 FLOW_CONTROL_HARD,   //!< Hardware flow control.
-                FLOW_CONTROL_SOFT,   //!< Software flow control. 
+                FLOW_CONTROL_SOFT,   //!< Software flow control.
                 FLOW_CONTROL_NONE,   //!< No flow control.
-                FLOW_CONTROL_INVALID //!< Invalid flow control setting. 
+                FLOW_CONTROL_INVALID //!< Invalid flow control setting.
             } ;
             //@}
 
@@ -111,11 +111,11 @@ extern "C++" {
              * Public Static Members
              * ------------------------------------------------------------
              */
-            /** @name Public static members. 
+            /** @name Public static members.
 
             */
             //@{
-            /** The default value of the baud rate of the serial port. 
+            /** The default value of the baud rate of the serial port.
 
             */
             static const BaudRateEnum DEFAULT_BAUD ;
@@ -126,16 +126,16 @@ extern "C++" {
             */
             static const CharSizeEnum DEFAULT_CHAR_SIZE ;
 
-            /** The default number of stop bits used.  
+            /** The default number of stop bits used.
 
             */
             static const short DEFAULT_NO_OF_STOP_BITS ;
 
-            /** The default parity setting. 
-	  
+            /** The default parity setting.
+
             */
             static const ParityEnum DEFAULT_PARITY ;
-      
+
             /** The default flow control setting.
 
             */
@@ -168,7 +168,7 @@ extern "C++" {
             */
             SerialStreamBuf() ;
 
-            /** The destructor.  
+            /** The destructor.
 
             */
             ~SerialStreamBuf() ;
@@ -196,7 +196,7 @@ extern "C++" {
                 serial port and hence all other settings result in the call
                 to fail. The value of <tt>flags</tt> is obtained as:
                 <br>
-	  
+
                 <tt>flags = u_flags | O_NOCTTY</tt>
                 <br>
 
@@ -231,8 +231,8 @@ extern "C++" {
                 returns a null pointer.
 
             */
-            SerialStreamBuf* open( const std::string filename, 
-                                   std::ios_base::openmode mode = 
+            SerialStreamBuf* open( const std::string filename,
+                                   std::ios_base::openmode mode =
                                    std::ios_base::in | std::ios_base::out ) ;
 
             /** If is_open() == false, returns a null pointer. If a put area
@@ -264,8 +264,8 @@ extern "C++" {
             int SetParametersToDefault() ;
 
             /** If is_open() != true, return -1. Otherwise, set the baud
-                rate of the associated serial port. Return the baud rate 
-                on success and BAUD_INVALID on failure. 
+                rate of the associated serial port. Return the baud rate
+                on success and BAUD_INVALID on failure.
 
             */
             const BaudRateEnum SetBaudRate(const BaudRateEnum baud_rate) ;
@@ -293,60 +293,60 @@ extern "C++" {
             /** Set the number of stop bits used during serial
                 communication. The only valid values are 1 and 2.
 
-                @param stop_bits The number of stop bits. (1 or 2). 
-                @return The number of stop bits or -1 on failure. 
-	  
+                @param stop_bits The number of stop bits. (1 or 2).
+                @return The number of stop bits or -1 on failure.
+
             */
             short SetNumOfStopBits(short stop_bits) ;
 
             /** Get the number of stop bits being used during serial
                 communication.
-	  
-                @return The number of stop bits.  
+
+                @return The number of stop bits.
             */
-            short NumOfStopBits() const ; 
+            short NumOfStopBits() const ;
 
             /** Set the parity for serial communication.
-	  
-            @param parity The parity value. 
-	  
+
+            @param parity The parity value.
+
             */
             const ParityEnum SetParity(const ParityEnum parity) ;
 
-            /** Get the current parity setting for the serial port. 
-	  
-            @return The parity setting for the serial port. 
-	  
+            /** Get the current parity setting for the serial port.
+
+            @return The parity setting for the serial port.
+
             */
             const ParityEnum Parity() const ;
 
-            /** Use the specified flow control. 
+            /** Use the specified flow control.
 
             */
             const FlowControlEnum SetFlowControl(const FlowControlEnum flow_c) ;
 
-            /** Return the current flow control setting. 
+            /** Return the current flow control setting.
 
             */
             const FlowControlEnum FlowControl() const ;
 
             /** Set character buffer size.
-                
+
             */
             const short SetVMin( short vtime ) ;
 
             /** Get current size of character buffer.
-                
+
             */
             const short VMin() const;
 
             /** Set character buffer timing in 10th of a second.
-                
+
             */
             const short SetVTime( short vtime ) ;
 
             /** Get current timing of character buffer in 10th of a second.
-                
+
             */
             const short VTime() const;
 
@@ -357,6 +357,13 @@ extern "C++" {
             //@{
 
             //@}
+
+
+
+
+            // KAEL - Moving needed functino to public
+            virtual std::streamsize xsgetn( char_type*      s,
+                                            std::streamsize n ) ;
 
             /* ------------------------------------------------------------
              * Friends
@@ -372,7 +379,7 @@ extern "C++" {
 
             */
             static const char CTRL_Q = 0x11 ;
-      
+
             /** Character used to signal that I/O should stop while using
                 software flow control with the serial port.
 
@@ -388,24 +395,24 @@ extern "C++" {
                 setbuf(0, 0) usually means unbuffered I/O and setbuf(p, n)
                 means use p[0]...p[n-1] to hold the buffered characters. In
                 general, this method implements the subclass's notion of
-                getting memory for the buffered characters. 
-	  
+                getting memory for the buffered characters.
+
                 In the case of SerialStreamBuf, we want to keep using
                 unbuffered I/O. Hence, using this method has no effect at
                 present.
 
             */
-            virtual std::streambuf* setbuf( char_type*, 
+            virtual std::streambuf* setbuf( char_type*,
                                             std::streamsize ) ;
 
             /** Reads upto n characters from the serial port and returns
                 them through the character array located at s.
 
                 @return The number of characters actually read from the
-                serial port. 
+                serial port.
             */
-            virtual std::streamsize xsgetn( char_type*      s, 
-                                            std::streamsize n ) ;
+//            virtual std::streamsize xsgetn( char_type*      s,
+//                                            std::streamsize n ) ;
 
 	    /** Check, wether input is available on the port.
 		If you call \c SerialStream::in_avail, this method will be
@@ -423,7 +430,7 @@ extern "C++" {
                 method is used for buffered I/O while uflow() is called for
                 unbuffered I/O.
 
-                @return The next character from the serial port. 
+                @return The next character from the serial port.
             */
             virtual int_type underflow() ;
 
@@ -432,7 +439,7 @@ extern "C++" {
                 method is used for unbuffered I/O while underflow() is
                 called for unbuffered I/O.
 
-                @return The next character from the serial port.  
+                @return The next character from the serial port.
 
             */
             virtual int_type   uflow() ;
@@ -446,18 +453,18 @@ extern "C++" {
             virtual int_type pbackfail(int_type c = traits_type::eof()) ;
 
             /** Writes upto n characters from the character sequence at s to
-                the serial port associated with the buffer. 
+                the serial port associated with the buffer.
 
                 @return The number of characters that were successfully
-                written to the serial port. 
+                written to the serial port.
             */
-            virtual std::streamsize xsputn( const char_type* s, 
+            virtual std::streamsize xsputn( const char_type* s,
                                             std::streamsize  n ) ;
 
             /** Writes the specified character to the associated
-                serial port. 
+                serial port.
 
-                @return The character c. 
+                @return The character c.
             */
             virtual int_type overflow(int_type c) ;
 
@@ -473,12 +480,12 @@ extern "C++" {
             */
             char mPutbackChar ;
 
-            /** True if a putback value is available in mPutbackChar. 
+            /** True if a putback value is available in mPutbackChar.
 
             */
             bool mPutbackAvailable ;
-      
-            /** The file descriptor associated with the serial port. 
+
+            /** The file descriptor associated with the serial port.
 
             */
             int mFileDescriptor ;
@@ -490,12 +497,12 @@ extern "C++" {
                 parameters of the serial port and setting its parameters to
                 default values.
 
-                @return -1 on failure and some other value on success. 
+                @return -1 on failure and some other value on success.
             */
             int InitializeSerialPort() ;
         } ; // class SerialStreamBuf
 
-        inline 
+        inline
         SerialStreamBuf::SerialStreamBuf() :
             mPutbackChar(0),
             mPutbackAvailable(false),
@@ -505,8 +512,8 @@ extern "C++" {
             return ;
         }
 
-        inline 
-        SerialStreamBuf::~SerialStreamBuf() 
+        inline
+        SerialStreamBuf::~SerialStreamBuf()
         {
             if( this->is_open() ) {
                 this->close() ;
@@ -516,24 +523,24 @@ extern "C++" {
 
         inline
         bool
-        SerialStreamBuf::is_open() const 
+        SerialStreamBuf::is_open() const
         {
             return (-1 != mFileDescriptor) ;
         }
-    
+
         inline
-        std::streambuf* 
-        SerialStreamBuf::setbuf(char_type *, std::streamsize) 
+        std::streambuf*
+        SerialStreamBuf::setbuf(char_type *, std::streamsize)
         {
             return std::streambuf::setbuf(0, 0) ;
         }
 
         inline
         SerialStreamBuf*
-        SerialStreamBuf::close() 
+        SerialStreamBuf::close()
         {
             //
-            // Return a null pointer if the serial port is not currently open. 
+            // Return a null pointer if the serial port is not currently open.
             //
             if( this->is_open() == false ) {
                 return 0 ;
@@ -544,12 +551,12 @@ extern "C++" {
             //
             if( -1 == ::close(mFileDescriptor) ) {
                 //
-                // If the close failed then return a null pointer. 
+                // If the close failed then return a null pointer.
                 //
                 return 0 ;
             } else {
                 //
-                // Set the file descriptor to an invalid value, -1. 
+                // Set the file descriptor to an invalid value, -1.
                 //
                 mFileDescriptor = -1 ;
                 //
@@ -558,10 +565,10 @@ extern "C++" {
                 return this ;
             }
         }
-    
+
         inline
         std::streambuf::int_type
-        SerialStreamBuf::uflow() 
+        SerialStreamBuf::uflow()
         {
             int_type next_ch = underflow() ;
             mPutbackAvailable = false ;

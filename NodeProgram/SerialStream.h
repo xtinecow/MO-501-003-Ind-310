@@ -136,6 +136,14 @@ extern "C++" {
                       std::ios_base::openmode mode =
                       std::ios_base::in | std::ios_base::out) ;
 
+
+
+
+
+
+            // Trying Kael's custom read
+            int CustomRead(char* output, int size);
+
             /** Close the serial port. No communications can occur with the
                 serial port after calling this routine.
 

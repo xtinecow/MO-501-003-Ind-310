@@ -9,36 +9,43 @@ using namespace LibSerial ;
 using namespace std ;
 
 SerialStream::SerialStream(const string filename, ios_base::openmode mode) :
-    mIOBuffer(0), iostream(0) 
+    mIOBuffer(0), iostream(0)
 {
     this->Open(filename, mode) ;
     return ;
 }
 
 
-void 
-SerialStream::Open( const std::string       filename, 
-                    std::ios_base::openmode mode ) 
+void
+SerialStream::Open( const std::string       filename,
+                    std::ios_base::openmode mode )
 {
     //
-    // Create a new SerialStreamBuf if one does not exist. 
+    // Create a new SerialStreamBuf if one does not exist.
     //
     if( ! mIOBuffer ) {
         this->rdbuf(mIOBuffer=new SerialStreamBuf) ;
         assert(mIOBuffer!=0) ;
     }
     //
-    // Open the serial port. 
+    // Open the serial port.
     //
     if( 0 == mIOBuffer->open(filename, mode) ) {
-        setstate(badbit) ;    
+        setstate(badbit) ;
     }
     return ;
 }
 
+int SerialStream::CustomRead(char* output, int size)
+{
+    std::streamsize numBytesRead;
+    numBytesRead = mIOBuffer->xsgetn(output, size);
+    return (int)numBytesRead;
+}
 
 
-void 
+
+void
 SerialStream::SetBaudRate(const SerialStreamBuf::BaudRateEnum baud_rate) {
     SerialStreamBuf* my_buffer = dynamic_cast<SerialStreamBuf *>(this->rdbuf()) ;
     //
@@ -67,7 +74,7 @@ SerialStream::SetBaudRate(const SerialStreamBuf::BaudRateEnum baud_rate) {
     return ;
 }
 
-const SerialStreamBuf::BaudRateEnum 
+const SerialStreamBuf::BaudRateEnum
 SerialStream::BaudRate() {
     SerialStreamBuf* my_buffer = dynamic_cast<SerialStreamBuf *>(this->rdbuf()) ;
     //
@@ -206,7 +213,7 @@ SerialStream::NumOfStopBits() {
     }
 }
 
-void 
+void
 SerialStream::SetParity(const SerialStreamBuf::ParityEnum parity) {
     SerialStreamBuf* my_buffer = dynamic_cast<SerialStreamBuf *>(this->rdbuf()) ;
     //
@@ -262,7 +269,7 @@ SerialStream::Parity() {
     }
 }
 
-void 
+void
 SerialStream::SetFlowControl(const SerialStreamBuf::FlowControlEnum flow_c) {
     SerialStreamBuf* my_buffer = dynamic_cast<SerialStreamBuf *>(this->rdbuf()) ;
     //
