@@ -4,7 +4,7 @@
 LibSerial::SerialStream serial;
 void OpenXbeeConnection (void)
 {
-    // Open USB port 0 (top middle usb port on Raspberry PI)
+    // Open USB port 0
      serial.Open("/dev/interceptPtty");
     // serial.Open("/dev/ttyUSB0");
 
@@ -85,4 +85,3 @@ void SetATCommandMode (void)
 
 
 }
-

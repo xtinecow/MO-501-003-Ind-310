@@ -39,7 +39,12 @@ void SetATCommandMode (void);
 
 //Network.cpp
 void FindNeighbors (void);
+void SetNetworkID (void);
 
+//Utilities.cpp
+int ConvertHexByteToInt (char* pointer);
+void ParseFNResponse(char *response, int size);
+void DisplayNodeTable(void);
 
 ///////////// Structure for node table
 struct NodeEntry

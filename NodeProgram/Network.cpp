@@ -10,7 +10,7 @@ void FindNeighbors (void)
     char response[MAX_NUM_NODES*FN_RESPONSE_SIZE];
     int read_timeout, i;// read timeout in ms
     char nextByte;
-    clock_t timeout;
+    int timeout;
     int numBytesRead = 0;
 
 
@@ -32,19 +32,55 @@ void FindNeighbors (void)
 
     serial << "ATND\r";
 
-    // Try reading response one character at a time
-    timeout = clock() + 1000000; // Give it 10 sec to respond
-
     numBytesRead = 0;
-    while (clock() < timeout)
+    timeout = 0;
+
+    while (timeout < 3)
     {
-        numBytesRead += serial.CustomRead(&response[numBytesRead], 47);
-        cout << numBytesRead << "Bytes read" << endl;
-        usleep(10000); // Only poll every 10 ms
-        if(numBytesRead > 46)
+        if(usleep(3500000)) // 3.5 sec
+            cout << "sleep failed" << endl;
+        numBytesRead += serial.CustomRead(&response[numBytesRead], MAX_NUM_NODES*FN_RESPONSE_SIZE);
+        if(numBytesRead > 2*FN_RESPONSE_SIZE || timeout >= 5)
             break;
+        timeout++; // Timeout will be dictated by number of usleep operations
     }
     cout << numBytesRead << "Bytes read" << endl;
+    cout << "timeout is: " << timeout << endl;
+
+    ParseFNResponse(response, numBytesRead);
+    DisplayNodeTable();
 
 }
 
+
+void SetNetworkID (void)
+{
+    int numBytesRead;
+    char response[12];
+    cout<<"Setting network ID to 0x0001... ";
+    serial << "ATID0x0001\r";
+
+    // Check for response.
+    numBytesRead = 0;
+    while(numBytesRead < 3)
+    {
+        usleep(1000); // Wait 1ms before checking
+        numBytesRead += serial.CustomRead(&response[numBytesRead], 20);
+    }
+    cout << response << endl;
+
+    cout << "Applying change... ";
+    serial << "ATAC\r";
+
+    // Check for OK
+    numBytesRead = 0;
+    while(numBytesRead < 3)
+    {
+        usleep(1000); // Wait 1ms before checking
+        numBytesRead += serial.CustomRead(&response[numBytesRead], 20);
+    }
+    cout << response << endl;
+
+
+
+}
