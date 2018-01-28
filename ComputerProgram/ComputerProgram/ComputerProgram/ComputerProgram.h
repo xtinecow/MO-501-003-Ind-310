@@ -48,6 +48,9 @@ void WaitForExit(void);
 void OpenSerialPort(int portNum);
 void SetATCommandMode(void);
 void ReadFirmwareVersion(void);
+void CheckForOKResponse(void);
+void ApplyChangeCommand(void);
+void SetAPIMode(void);
 void CloseSerialPort(void); 
 
 // Network.cpp

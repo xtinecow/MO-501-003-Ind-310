@@ -40,25 +40,7 @@ void SetATCommandMode(void)
 	cout << "done." << endl;
 	Sleep(1000); // wait for the required guard time (default of 1000 ms)
 
-	// Poll for 'OK' Response 
-	cout << "Waiting for OK Response... ";
-	timeout = clock() + CLOCKS_PER_SEC; // Give it 1 sec to respond
-	nBytesRead = 0;
-	while (clock() < timeout)
-	{
-		nBytesRead += serial.ReadData(response, 20);
-		if (nBytesRead == 3)
-		{
-			cout << response[0] << response[1] << endl;
-			break; 
-		}
-		Sleep(100); // Only pull every 100 ms
-	}
-	if (!nBytesRead)
-	{
-		cout << "Error reading from serial port"<< endl;
-		WaitForExit();
-	}
+	CheckForOKResponse(); 
 
 	// Set command mode timeout to max value (0x1770)
 	command[0] = 'A';
@@ -83,61 +65,9 @@ void SetATCommandMode(void)
 	}
 	cout << "done" << endl; 
 
-	// Poll for 'OK' Response 
-	cout << "Waiting for OK Response... ";
-	timeout = clock() + CLOCKS_PER_SEC; // Give it 1 sec to respond
-	nBytesRead = 0;
-	while (clock() < timeout)
-	{
-		nBytesRead += serial.ReadData(response, 20);
-		if (nBytesRead == 3)
-		{
-			cout << response[0] << response[1] << endl;
-			break;
-		}
-		Sleep(100); // Only pull every 100 ms
-	}
-	if (!nBytesRead)
-	{
-		cout << "Error reading from serial port" << endl;
-		WaitForExit();
-	}
+	CheckForOKResponse(); 
 
-	command[0] = 'A';
-	command[1] = 'T';
-	command[2] = 'A';
-	command[3] = 'C';
-	command[4] = 13; // Append carriage return
-	cout << "Applying change.. ";
-	nBytesSent = 0;
-	nBytesSent = serial.SendData(command, 5);
-	if (!nBytesSent)
-	{
-		cout << "Error writing to serial port" << endl;
-		WaitForExit();
-	}
-	cout << "done." << endl;
-
-
-	// Poll for 'OK' Response 
-	cout << "Waiting for OK Response... ";
-	timeout = clock() + CLOCKS_PER_SEC; // Give it 1 sec to respond
-	nBytesRead = 0;
-	while (clock() < timeout)
-	{
-		nBytesRead = serial.ReadData(response, 20);
-		if (nBytesRead == 3)
-		{
-			cout << response[0] << response[1] << endl;
-			break;
-		}
-		Sleep(100); // Only pull every 100 ms
-	}
-	if (!nBytesRead)
-	{
-		cout << "Error reading from serial port" << endl;
-		WaitForExit();
-	}
+	ApplyChangeCommand(); 
 
 
 
@@ -178,6 +108,90 @@ void ReadFirmwareVersion(void)
 	cout << "Error reading from serial port" << endl;
 	WaitForExit();
 
+}
+
+// Put the module in API mode 1. This means only API frames will be accepted (no Escape characters enabled) 
+void SetAPIMode(void)
+{
+	char command[12]; 
+	char response[12]; 
+	int nBytesSent, nBytesRead; 
+	clock_t timeout; 
+	command[0] = 'A';
+	command[1] = 'T';
+	command[2] = 'A';
+	command[3] = 'P';
+	command[3] = '0';
+	command[3] = 'x';
+	command[3] = '0';
+	command[3] = '1';
+	command[4] = 13; // Append carriage return
+	cout << "Applying change.. ";
+	nBytesSent = 0;
+	nBytesSent = serial.SendData(command, 5);
+	if (!nBytesSent)
+	{
+		cout << "Error writing to serial port" << endl;
+		WaitForExit();
+	}
+	cout << "done." << endl;
+
+
+	CheckForOKResponse();
+	ApplyChangeCommand(); 
+
+}
+
+// Moving this to its own function because it gets called a lot
+void CheckForOKResponse(void)
+{ 
+	char response[4]; 
+	int nBytesRead;
+	clock_t timeout; 
+	// Poll for 'OK' Response 
+	cout << "Waiting for OK Response... ";
+	timeout = clock() + CLOCKS_PER_SEC; // Give it 1 sec to respond
+	nBytesRead = 0;
+	while (clock() < timeout)
+	{
+		nBytesRead = serial.ReadData(response, 4);
+		if (nBytesRead == 3)
+		{
+			cout << response[0] << response[1] << endl;
+			break;
+		}
+		Sleep(100); // Only pull every 100 ms
+	}
+	if (!nBytesRead)
+	{
+		cout << "Error reading from serial port" << endl;
+		WaitForExit();
+	}
+}
+
+// Moving this to its own function because it gets called a lot
+void ApplyChangeCommand(void)
+{
+	char command[8]; 
+	int nBytesSent; 
+
+	// Apply change to module
+	command[0] = 'A';
+	command[1] = 'T';
+	command[2] = 'A';
+	command[3] = 'C';
+	command[4] = 13; // Append carriage return
+	cout << "Applying change.. ";
+	nBytesSent = 0;
+	nBytesSent = serial.SendData(command, 5);
+	if (!nBytesSent)
+	{
+		cout << "Error writing to serial port" << endl;
+		WaitForExit();
+	}
+	cout << "done." << endl;
+
+	CheckForOKResponse(); 
 }
 
 void CloseSerialPort()

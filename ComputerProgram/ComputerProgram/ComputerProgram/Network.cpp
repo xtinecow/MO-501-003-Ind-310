@@ -38,63 +38,12 @@ void NetworkDiscover(void)
 	}
 	cout << "done" << endl;
 
-	// Poll for 'OK' Response 
-	cout << "Waiting for OK Response... ";
-	timeout = clock() + CLOCKS_PER_SEC; // Give it 1 sec to respond
-	nBytesRead = 0;
-	while (clock() < timeout)
-	{
-		nBytesRead += serial.ReadData(response, 20);
-		if (nBytesRead == 3)
-		{
-			cout << response[0] << response[1] << endl;
-			break;
-		}
-		Sleep(100); // Only pull every 100 ms
-	}
-	if (!nBytesRead)
-	{
-		cout << "Error reading from serial port" << endl;
-		WaitForExit();
-	}
+	CheckForOKResponse(); 
 
-	command[0] = 'A';
-	command[1] = 'T';
-	command[2] = 'A';
-	command[3] = 'C';
-	command[4] = 13; // Append carriage return
-	cout << "Applying change.. ";
-	nBytesSent = 0;
-	nBytesSent = serial.SendData(command, 5);
-	if (!nBytesSent)
-	{
-		cout << "Error writing to serial port" << endl;
-		WaitForExit();
-	}
-	cout << "done." << endl;
+	ApplyChangeCommand(); 
 
 
-	// Poll for 'OK' Response 
-	cout << "Waiting for OK Response... ";
-	timeout = clock() + CLOCKS_PER_SEC; // Give it 1 sec to respond
-	nBytesRead = 0;
-	while (clock() < timeout)
-	{
-		nBytesRead = serial.ReadData(response, 20);
-		if (nBytesRead == 3)
-		{
-			cout << response[0] << response[1] << endl;
-			break;
-		}
-		Sleep(100); // Only pull every 100 ms
-	}
-	if (!nBytesRead)
-	{
-		cout << "Error reading from serial port" << endl;
-		WaitForExit();
-	}
-
-	// Now send command
+	// Now send network discover command
 	command[0] = 'A';
 	command[1] = 'T'; 
 	command[2] = 'N'; 
@@ -159,24 +108,9 @@ void SetNetworkID(void)
 	}
 	cout << "done" << endl;
 
-	// Poll for 'OK' Response 
-	cout << "Waiting for OK Response... ";
-	timeout = clock() + CLOCKS_PER_SEC; // Give it 1 sec to respond
-	nBytesRead = 0;
-	while (clock() < timeout)
-	{
-		nBytesRead += serial.ReadData(response, 20);
-		if (nBytesRead == 3)
-		{
-			cout << response[0] << response[1] << endl;
-			break;
-		}
-		Sleep(100); // Only pull every 100 ms
-	}
-	if (!nBytesRead)
-	{
-		cout << "Error reading from serial port" << endl;
-		WaitForExit();
-	}
+	CheckForOKResponse(); 
+
+	// Apply change
+	ApplyChangeCommand(); 
 
 }

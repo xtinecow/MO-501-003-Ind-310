@@ -20,7 +20,7 @@ void ParseNDResponse(char *response, int size)
 			NodeList[node].MAC[8 + macByte] = response[macIndex];
 		}
 		rssiIndex = 46;
-		NodeList[node].RSSI = ConvertHexByteToInt(&response[46]);
+		NodeList[node].RSSI = ConvertHexByteToInt(&response[node*ND_RESPONSE_SIZE+46]);
 	}
 }
 
@@ -32,7 +32,7 @@ int ConvertHexByteToInt(char* pointer)
 
 	for (i = 0; i<2; i++)
 	{
-		switch (pointer[0])
+		switch (pointer[i])
 		{
 		case '0': dig = 0;
 			break;
@@ -54,17 +54,17 @@ int ConvertHexByteToInt(char* pointer)
 			break;
 		case '9': dig = 9;
 			break;
-		case 'a': dig = 10;
+		case 'A': dig = 10;
 			break;
-		case 'b': dig = 11;
+		case 'B': dig = 11;
 			break;
-		case 'c': dig = 12;
+		case 'C': dig = 12;
 			break;
-		case 'd': dig = 13;
+		case 'D': dig = 13;
 			break;
-		case 'e': dig = 14;
+		case 'E': dig = 14;
 			break;
-		case 'f': dig = 15;
+		case 'F': dig = 15;
 			break;
 
 		default:
