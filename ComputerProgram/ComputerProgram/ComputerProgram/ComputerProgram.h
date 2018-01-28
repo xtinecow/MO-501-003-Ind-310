@@ -20,7 +20,6 @@
 #define MAX_NUM_NODES 6
 
 // Format is as follows:
-// First Half: 
 // FFFE
 // MAC (first 4 bytes)
 // MAC (second 4 bytes)
@@ -53,6 +52,12 @@ void CloseSerialPort(void);
 
 // Network.cpp
 void NetworkDiscover(void);
+void SetNetworkID(void);
+
+// Utilities.cpp
+void ParseNDResponse(char *response, int size);
+int ConvertHexByteToInt(char* pointer);
+void DisplayNodeList(void); 
 
 /////////////// Structure for node table 
 struct NodeEntry
