@@ -6,18 +6,17 @@ void ParseNDResponse(char *response, int size)
 	int node, macByte, numNodes, macIndex, rssiIndex;
 
 	numNodes = size / ND_RESPONSE_SIZE;
-
 	for (node = 0; node<numNodes; node++)
 	{
-		for (macByte = 0; macByte<8; macByte++)
+		for (macByte = 0; macByte<4; macByte++)
 		{
-			macIndex = node*ND_RESPONSE_SIZE + 5 + macByte; // Offset of 5 for FFFE\r
-			NodeList[node].MAC[macByte] = response[macIndex];
+			macIndex = node*ND_RESPONSE_SIZE + 5 + 2*macByte; // Offset of 5 for FFFE\r
+			NodeList[node].MAC[macByte] = (unsigned char)ConvertHexByteToInt(&response[macIndex]);
 		}
-		for (macByte = 0; macByte<8; macByte++)
+		for (macByte = 0; macByte<4; macByte++)
 		{
-			macIndex = node*ND_RESPONSE_SIZE + 14 + macByte; // Skip carriage return in middle of MAC
-			NodeList[node].MAC[8 + macByte] = response[macIndex];
+			macIndex = node*ND_RESPONSE_SIZE + 14 + 2*macByte; // Skip carriage return in middle of MAC
+			NodeList[node].MAC[4 + macByte] = (unsigned char)ConvertHexByteToInt(&response[macIndex]);
 		}
 		rssiIndex = 46;
 		NodeList[node].RSSI = ConvertHexByteToInt(&response[node*ND_RESPONSE_SIZE+46]);
@@ -88,9 +87,9 @@ void DisplayNodeList(void)
 	{
 		cout << "Node number: " << node << endl;
 		cout << "MAC: ";
-		for (i = 0; i<7; i++)
-			cout << NodeList[node].MAC[2 * i] << NodeList[node].MAC[2 * i + 1] << ":";
-		cout << NodeList[node].MAC[14] << NodeList[node].MAC[15] << endl;
+		for (i = 0; i < 7; i++)
+			cout << hex << uppercase << setw(2) << setfill('0') << (int)NodeList[node].MAC[i] << ":";
+		cout << hex << uppercase << setw(2) << setfill('0') << (int)NodeList[node].MAC[7] << endl; 
 		cout << "RSSI: " << NodeList[node].RSSI << endl;
 	}
 }
