@@ -3,6 +3,7 @@
 /////////////// Add all libraries here
 #include <iostream>
 #include<time.h>
+#include<iomanip>
 
 // Using serial class obtained online from https://github.com/Derecho/libserial/blob/master/src/SerialStream.h
 // Tutorial for this found at http://libserial.sourceforge.net/x27.html
@@ -49,7 +50,7 @@ void DisplayNodeTable(void);
 ///////////// Structure for node table
 struct NodeEntry
 {
-    char MAC[16];
+    char MAC[8];
     int RSSI;
 };
 

@@ -3,24 +3,29 @@ using namespace std;
 
 void ParseFNResponse(char *response, int size)
 {
-    int node,macByte, numNodes, macIndex, rssiIndex;
+    int node,macByte, numNodes, macIndex;
 
-    numNodes = size/FN_RESPONSE_SIZE;
+    while (response[0] != 'F')
+    {
+        response++; // Increment pointer when start of data is off
+        size--; // Discarding first byte so size has to be decreased accordingly
+        cout << "Aligning data..." << endl;
+    }
+        numNodes = size/FN_RESPONSE_SIZE;
 
     for(node=0; node<numNodes; node++)
     {
-        for(macByte=0; macByte<8; macByte++)
+        for(macByte=0; macByte<4; macByte++)
         {
-            macIndex = node*FN_RESPONSE_SIZE+5+macByte; // Offset of 5 for FFFE\r
-            NodeTable[node].MAC[macByte] = response[macIndex];
+            macIndex = node*FN_RESPONSE_SIZE+5+2*macByte; // Offset of 5 for FFFE\r
+            NodeTable[node].MAC[macByte] = (unsigned char)ConvertHexByteToInt(&response[macIndex]);
         }
-        for(macByte=0; macByte<8; macByte++)
+        for(macByte=0; macByte<4; macByte++)
         {
-            macIndex = node*FN_RESPONSE_SIZE+14+macByte; // Skip carriage return in middle of MAC
-            NodeTable[node].MAC[8+macByte] = response[macIndex];
+            macIndex = node*FN_RESPONSE_SIZE+14+2*macByte; // Skip carriage return in middle of MAC
+            NodeTable[node].MAC[4+macByte] = (unsigned char)ConvertHexByteToInt(&response[macIndex]);
         }
-        rssiIndex = 46;
-        NodeTable[node].RSSI = ConvertHexByteToInt(&response[46]);
+        NodeTable[node].RSSI = ConvertHexByteToInt(&response[node*FN_RESPONSE_SIZE+46]);
     }
 }
 
@@ -32,7 +37,7 @@ int ConvertHexByteToInt (char* pointer)
 
     for(i=0; i<2; i++)
     {
-        switch(pointer[0])
+        switch(pointer[i])
         {
             case '0': dig=0;
                     break;
@@ -68,7 +73,7 @@ int ConvertHexByteToInt (char* pointer)
                     break;
 
             default:
-                cout << "Invalid character " << pointer[i] << " entered" << endl;
+                cout << endl << (int)pointer[i] << " entered at " << i<< endl;
                 break;
 
             }
@@ -84,13 +89,13 @@ void DisplayNodeTable(void)
 {
     int i, node;
 
-    for(node=0; node<MAX_NUM_NODES; node++)
+    for(node=0; node<2/*MAX_NUM_NODES*/; node++) // Only display relevant nodes for now
     {
         cout << "Node number: " << node << endl;
         cout << "MAC: ";
-        for(i=0; i<8; i++)
-            cout << NodeTable[node].MAC[2*i] << NodeTable[node].MAC[2*i+1] << ":";
-        cout << endl;
+        for(i=0; i<7; i++)
+            cout << hex << uppercase << setw(2) << setfill('0') << (int)NodeTable[node].MAC[i] << ":";
+        cout << hex << uppercase << setw(2) << setfill('0') << (int)NodeTable[node].MAC[7] << endl;
         cout << "RSSI: " << NodeTable[node].RSSI << endl;
     }
 }

@@ -35,17 +35,14 @@ void FindNeighbors (void)
     numBytesRead = 0;
     timeout = 0;
 
-    while (timeout < 3)
+    while (timeout < 1) // timeout didn't seem to be working so just trying one big read for now
     {
-        if(usleep(3500000)) // 3.5 sec
+        if(usleep(13000000)) // Max time = NT= 13 seconds(default). Might want to make this shorter in the future.
             cout << "sleep failed" << endl;
-        numBytesRead += serial.CustomRead(&response[numBytesRead], MAX_NUM_NODES*FN_RESPONSE_SIZE);
-        if(numBytesRead > 2*FN_RESPONSE_SIZE || timeout >= 5)
-            break;
+        numBytesRead += serial.CustomRead(&response[numBytesRead], MAX_NUM_NODES*FN_RESPONSE_SIZE);// Only try reading 2 at a time to see if this makes it better
         timeout++; // Timeout will be dictated by number of usleep operations
     }
     cout << numBytesRead << "Bytes read" << endl;
-    cout << "timeout is: " << timeout << endl;
 
     ParseFNResponse(response, numBytesRead);
     DisplayNodeTable();
