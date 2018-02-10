@@ -32,56 +32,60 @@ void SetATCommandMode (void)
         usleep(50000); // Wait for 50 milisec between each one
     }
 
-    std::cout << "done." << std::endl;
-
     usleep(1000000); // wait for required guard time (1 000 000 microseconds)
 
-    std::cout << "Waiting for OK Response... ";
+    CheckForOK();
 
-    usleep(1000); // Wait 1ms before checking
-   numBytesRead = serial.CustomRead(response, 20);
-    std::cout << response << std::endl;
-    std:: cout << "Number of bytes read: " << numBytesRead << std::endl;
-
-    std::cout<<"Now setting timeout to max value... ";
+    std::cout<<"Now setting timeout to max value... " << std::endl;
     serial << "ATCT0X1770\r";
 
-    // Check for response.
-    numBytesRead = 0;
+    CheckForOK();
+    ApplyChange();
+
+}
+
+void SetAPIMode(void)
+{
+
+    char response[4];
+    int numBytesRead;
+
+    std::cout << "Setting API Mode... " << std::endl;
+    serial << "ATAP1\r"; // Set API mode 1
+    CheckForOK();
+    ApplyChange();
+
+
+
+}
+
+void ExitCommandMode(void)
+{
+    std::cout << "Exiting command mode... " << std::endl;
+    serial << "ATCN\r";
+    CheckForOK();
+}
+
+// Checks serial port for OK response
+// Clean up code to always use this function later.
+void CheckForOK (void)
+{
+    char response[4];
+    int numBytesRead = 0;
     while(numBytesRead < 3)
     {
         usleep(1000); // Wait 1ms before checking
-        numBytesRead += serial.CustomRead(&response[numBytesRead], 20);
+        numBytesRead += serial.CustomRead(&response[numBytesRead], 4);
     }
-    std::cout << response << std::endl;
-    std:: cout << "Number of bytes read: " << numBytesRead << std::endl;
+    std::cout << response[0] << response[1] << std::endl;
+}
 
-    std:: cout << "Applying change... ";
+// Applies change to XBEE module
+// Clean up code to always use this function later.
+void ApplyChange(void)
+{
+    std::cout << "Applying change..." << std::endl;
     serial << "ATAC\r";
 
-    // Check for OK
-    numBytesRead = 0;
-    while(numBytesRead < 3)
-    {
-        usleep(1000); // Wait 1ms before checking
-        numBytesRead += serial.CustomRead(&response[numBytesRead], 20);
-    }
-    std::cout << response << std::endl;
-    std:: cout << "Number of bytes read: " << numBytesRead << std::endl;
-
-
-    std:: cout << "Checking timeout register... ";
-    serial << "ATCT\r";
-
-    // Check for response.
-    numBytesRead = 0;
-    while(numBytesRead < 4)
-    {
-        usleep(1000); // Wait 1ms before checking
-        numBytesRead += serial.CustomRead(&response[numBytesRead], 20);
-    }
-    std::cout << response << std::endl;
-    std:: cout << "Number of bytes read: " << numBytesRead << std::endl << std::endl;
-
-
+    CheckForOK();
 }

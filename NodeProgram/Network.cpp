@@ -6,10 +6,7 @@ NodeEntry NodeTable[MAX_NUM_NODES];
 
 void FindNeighbors (void)
 {
-    char command[12];
     char response[MAX_NUM_NODES*FN_RESPONSE_SIZE];
-    int read_timeout, i;// read timeout in ms
-    char nextByte;
     int timeout;
     int numBytesRead = 0;
 

@@ -36,6 +36,10 @@
 //XBEE.cpp
 void OpenXbeeConnection (void);
 void SetATCommandMode (void);
+void SetAPIMode(void);
+void ExitCommandMode(void);
+void CheckForOK (void);
+void ApplyChange(void);
 
 
 //Network.cpp
