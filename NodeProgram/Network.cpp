@@ -15,15 +15,7 @@ void FindNeighbors (void)
 	cout << "Setting option to return RSSI...  ";
     serial << "ATNO0x04\r";
 
-    while(numBytesRead < 3)
-    {
-        usleep(1000); // Wait 1ms before checking
-        numBytesRead += serial.CustomRead(&response[numBytesRead], 20);
-    }
-    std::cout << response << std::endl;
-    std:: cout << "Number of bytes read: " << numBytesRead << std::endl;
-
-
+    CheckForOK();
 
    cout << "Now sending find neighbors command... " << endl;
 
@@ -49,32 +41,10 @@ void FindNeighbors (void)
 
 void SetNetworkID (void)
 {
-    int numBytesRead;
-    char response[12];
     cout<<"Setting network ID to 0x0001... ";
     serial << "ATID0x0001\r";
 
-    // Check for response.
-    numBytesRead = 0;
-    while(numBytesRead < 3)
-    {
-        usleep(1000); // Wait 1ms before checking
-        numBytesRead += serial.CustomRead(&response[numBytesRead], 20);
-    }
-    cout << response << endl;
-
-    cout << "Applying change... ";
-    serial << "ATAC\r";
-
-    // Check for OK
-    numBytesRead = 0;
-    while(numBytesRead < 3)
-    {
-        usleep(1000); // Wait 1ms before checking
-        numBytesRead += serial.CustomRead(&response[numBytesRead], 20);
-    }
-    cout << response << endl;
-
-
+    CheckForOK();
+    ApplyChange();
 
 }
