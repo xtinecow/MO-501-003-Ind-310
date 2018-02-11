@@ -58,7 +58,7 @@ void NetworkDiscover(void)
 		cout << "Error writing to serial port" << endl;
 		WaitForExit();
 	}
-	timeout = clock() + 10*CLOCKS_PER_SEC; // Give it 15 sec to respond
+	timeout = clock() + 13*CLOCKS_PER_SEC; // Give it 10 sec to respond
 	nBytesRead = 0;
 	while (clock() < timeout)
 	{
@@ -67,6 +67,8 @@ void NetworkDiscover(void)
 			break; 
 		Sleep(100); // Only poll every 100 ms
 	} 
+
+
 	if (!nBytesRead)
 		cout << "No Response" << endl; 
 	else
@@ -113,4 +115,37 @@ void SetNetworkID(void)
 	// Apply change
 	ApplyChangeCommand(); 
 
+}
+
+void SendTableRequest(int node)
+{
+	int i, nBytesSent; 
+	TxFrame request;
+
+	request.delim = 0x7E; 
+	request.length[0] = 0; // Way less than 1 byte so MSB is always 0
+	request.length[1] = sizeof(TxFrame) - 4; // 4 header bytes not counted? (Based on XCTU Frame Generator)
+	request.type = 0x10; // Request type
+	request.ID = 1; 
+	for (i = 0; i < 8; i++)
+		request.MAC[i] = NodeList[0].MAC[i]; 
+
+	request.FFFE[0] = 0xFF; 
+	request.FFFE[1] = 0xFE; 
+	request.broadcast = 0; 
+	request.option = 0; 
+	request.payload[0] = 1; // Send a 1 to request table
+
+	CalculateRequestChecksum(&request); 
+
+	// Send it off
+	cout << "Sending request for table... ";
+	nBytesSent = 0;
+	nBytesSent = serial.SendData((char*)&request, sizeof(TxFrame));
+	if (!nBytesSent)
+	{
+		cout << "Error writing to serial port" << endl;
+		WaitForExit();
+	}
+	cout << "done" << endl; 
 }

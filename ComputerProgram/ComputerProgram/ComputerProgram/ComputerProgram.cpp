@@ -28,20 +28,26 @@ int main(int argc, char *argv[])
 	 ReadFirmwareVersion(); 
 
 	 SetNetworkID(); 
-	 NetworkDiscover(); 
+	 NetworkDiscover();
 
-	 // Close port
-	 CloseSerialPort();  
+	 // Network discover makes command mode time out so need to set it again
+	  SetATCommandMode();
+	  SetAPIMode(); 
+	  ExitCommandMode(); 
+
 	 DisplayNodeList(); 
 
 		while (1)
 		{
 			while (!(keyboardCommand = CheckKeyboard())) {}; // Wait for input
 			if (keyboardCommand == 'E')
+			{
 				exit(1);
+				CloseSerialPort();
+			}
 			else
 			{
-				cout << keyboardCommand << endl; // Just spit out command if not E
+				SendTableRequest(0); // Use 'A' to send a table request
 				keyboardCommand = 0;
 				Sleep(100); // Delay for a bit
 			}

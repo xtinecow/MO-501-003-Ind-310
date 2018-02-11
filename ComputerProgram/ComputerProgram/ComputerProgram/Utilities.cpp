@@ -93,3 +93,24 @@ void DisplayNodeList(void)
 		cout << "RSSI: " << NodeList[node].RSSI << endl;
 	}
 }
+
+// Checksum is 0xFF - sum of all bytes from API frame type through payload
+void CalculateRequestChecksum(TxFrame *request)
+{
+	int i; 
+	unsigned char checksum = 0xFF; 
+	checksum -= request->type; 
+	checksum -= request->ID;
+	checksum -= request->FFFE[0];
+	checksum -= request->FFFE[1];
+	checksum -= request->broadcast; 
+	checksum -= request->option;
+
+	for (i=0; i<8; i++)
+		checksum-= request->MAC[i];
+	for (i=0; i<6; i++)
+		checksum -= request->payload[i];
+
+	// Append result back to struct
+	request->checksum = checksum; 
+}

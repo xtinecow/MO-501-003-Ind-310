@@ -6,6 +6,7 @@
 #include<tchar.h> 
 #include<time.h>
 #include<stdlib.h>
+#include<iomanip>
 
 // Serial library added from blog post
 // https://www.codeguru.com/cpp/i-n/network/serialcommunications/article.php/c2503/CSerial--A-C-Class-for-Serial-Communications.htm
@@ -22,7 +23,7 @@
 // Format is as follows:
 // FFFE
 // MAC (first 4 bytes)
-// MAC (second 4 bytes)
+// MAC (second 4 bytes) 
 // (space)
 // FFFE
 // Device Type: Router - 01
@@ -37,6 +38,31 @@
 // returned in ASCII so each byte takes two chars. 
 #define ND_RESPONSE_SIZE 50
 
+/////////////// Struct Definitions
+struct NodeEntry
+{
+	unsigned char MAC[8]; //MAC stored in chars so each byte shows up as 2 chars (just how it's returned, can change later)
+	int RSSI; // Only trying this for now. Will eventually have to be table of neighbors. 
+
+};
+
+// Frame format for API transmission
+// Big endian so no byte swapping necessary
+struct TxFrame
+{
+	unsigned char  delim;
+	unsigned char length[2];
+	unsigned char type;
+	unsigned char ID;
+	unsigned char MAC[8];
+	unsigned char FFFE[2]; // Reserved, always set to 0xfffe
+	unsigned char broadcast;
+	unsigned char option;
+	unsigned char payload[6]; // Small payload for Tx. Note: Max payload size fixed at 73
+	unsigned char checksum;
+
+}; // 24 bytes
+
 
 ///////////////// Function prototypes
 
@@ -50,25 +76,21 @@ void SetATCommandMode(void);
 void ReadFirmwareVersion(void);
 void CheckForOKResponse(void);
 void ApplyChangeCommand(void);
-void SetAPIMode(void);
+void SetAPIMode(void); 
+void ExitCommandMode(void); 
 void CloseSerialPort(void); 
 
 // Network.cpp
 void NetworkDiscover(void);
 void SetNetworkID(void);
+void SendTableRequest(int node);
 
 // Utilities.cpp
 void ParseNDResponse(char *response, int size);
 int ConvertHexByteToInt(char* pointer);
 void DisplayNodeList(void); 
+void CalculateRequestChecksum(TxFrame *request);
 
-/////////////// Structure for node table 
-struct NodeEntry
-{
-	char MAC[16]; //MAC stored in chars so each byte shows up as 2 chars (just how it's returned, can change later)
-	int RSSI; // Only trying this for now. Will eventually have to be table of neighbors. 
-
-};
 
 
 /////////////// Globals

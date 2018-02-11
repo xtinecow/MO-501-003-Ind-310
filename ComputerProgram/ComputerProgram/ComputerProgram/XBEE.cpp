@@ -113,6 +113,7 @@ void ReadFirmwareVersion(void)
 // Put the module in API mode 1. This means only API frames will be accepted (no Escape characters enabled) 
 void SetAPIMode(void)
 {
+	cout << "Setting API Mode... "; 
 	char command[12]; 
 	char response[12]; 
 	int nBytesSent, nBytesRead; 
@@ -121,14 +122,10 @@ void SetAPIMode(void)
 	command[1] = 'T';
 	command[2] = 'A';
 	command[3] = 'P';
-	command[3] = '0';
-	command[3] = 'x';
-	command[3] = '0';
-	command[3] = '1';
-	command[4] = 13; // Append carriage return
-	cout << "Applying change.. ";
+	command[4] = '1';
+	command[5] = 13; // Append carriage return
 	nBytesSent = 0;
-	nBytesSent = serial.SendData(command, 5);
+	nBytesSent = serial.SendData(command, 6);
 	if (!nBytesSent)
 	{
 		cout << "Error writing to serial port" << endl;
@@ -154,8 +151,8 @@ void CheckForOKResponse(void)
 	nBytesRead = 0;
 	while (clock() < timeout)
 	{
-		nBytesRead = serial.ReadData(response, 4);
-		if (nBytesRead == 3)
+		nBytesRead += serial.ReadData(response, 4);
+		if (nBytesRead >= 3)
 		{
 			cout << response[0] << response[1] << endl;
 			break;
@@ -192,6 +189,30 @@ void ApplyChangeCommand(void)
 	cout << "done." << endl;
 
 	CheckForOKResponse(); 
+}
+
+void ExitCommandMode (void)
+{
+	char command[8];
+	int nBytesSent;
+
+// Exit command mode
+	command[0] = 'A';
+	command[1] = 'T';
+	command[2] = 'C';
+	command[3] = 'N';
+	command[4] = 13; // Append carriage return
+	cout << "Applying change.. ";
+	nBytesSent = 0;
+	nBytesSent = serial.SendData(command, 5);
+	if (!nBytesSent)
+	{
+		cout << "Error writing to serial port" << endl;
+		WaitForExit();
+	}
+	cout << "done." << endl;
+
+	CheckForOKResponse();
 }
 
 void CloseSerialPort()
