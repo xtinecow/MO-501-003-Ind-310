@@ -14,6 +14,21 @@
 ////////////// Definitions
 #define MAX_NUM_NODES 6
 
+//Format is as follows:
+// 7E
+// Length MSB
+// Length LSB
+// 90
+// MAC[8]
+// FFFE
+// c1
+// Payload[6]
+// Checksum
+#define NETWORK_REQUEST_SIZE 22
+#define REQUEST_MAC_OFFSET 4
+#define REQUEST_PAYLOAD_OFFSET 15
+#define TABLE_REQUEST 1
+
 // Format is as follows:
 // FFFE
 // MAC (first 4 bytes)
@@ -45,6 +60,7 @@ void ApplyChange(void);
 //Network.cpp
 void FindNeighbors (void);
 void SetNetworkID (void);
+void WaitForNetworkCommand(void);
 
 //Utilities.cpp
 int ConvertHexByteToInt (char* pointer);
@@ -63,3 +79,4 @@ struct NodeEntry
 ///////////// Globals
 extern LibSerial::SerialStream serial;
 extern NodeEntry NodeTable[MAX_NUM_NODES];
+extern char HostMAC[8];

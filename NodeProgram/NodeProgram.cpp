@@ -21,16 +21,7 @@ int main(int argc, char *argv[])
     ExitCommandMode();
 
 
-
- while(numBytesRead < 3)
-    {
-        usleep(1000000); // Wait 1ms before checking
-        numBytesRead += serial.CustomRead(&response[numBytesRead], 4);
-        printf("Waiting for table request...\n");
-    }
-    std::cout << response << std::endl;
-    std:: cout << "Number of bytes read: " << numBytesRead << std::endl;
-
+    WaitForNetworkCommand();
 
 
 
