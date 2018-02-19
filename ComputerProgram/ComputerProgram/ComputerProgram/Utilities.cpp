@@ -3,7 +3,7 @@ using namespace std;
 
 void ParseNDResponse(char *response, int size)
 {
-	int node, macByte, numNodes, macIndex, rssiIndex;
+	int node, macByte, numNodes, macIndex; 
 
 	numNodes = size / ND_RESPONSE_SIZE;
 	for (node = 0; node<numNodes; node++)
@@ -18,8 +18,6 @@ void ParseNDResponse(char *response, int size)
 			macIndex = node*ND_RESPONSE_SIZE + 14 + 2*macByte; // Skip carriage return in middle of MAC
 			NodeList[node].MAC[4 + macByte] = (unsigned char)ConvertHexByteToInt(&response[macIndex]);
 		}
-		rssiIndex = 46;
-		NodeList[node].RSSI = ConvertHexByteToInt(&response[node*ND_RESPONSE_SIZE+46]);
 	}
 }
 
@@ -81,16 +79,26 @@ int ConvertHexByteToInt(char* pointer)
 
 void DisplayNodeList(void)
 {
-	int i, node;
+	int i, node, neighbor;
 
-	for (node = 0; node<MAX_NUM_NODES; node++)
+	for (node = 0; node < MAX_NUM_NODES; node++)
 	{
 		cout << "Node number: " << node << endl;
 		cout << "MAC: ";
+		// Switch to hex format and print addresses 
 		for (i = 0; i < 7; i++)
 			cout << hex << uppercase << setw(2) << setfill('0') << (int)NodeList[node].MAC[i] << ":";
-		cout << hex << uppercase << setw(2) << setfill('0') << (int)NodeList[node].MAC[7] << endl; 
-		cout << "RSSI: " << NodeList[node].RSSI << endl;
+		cout << hex << uppercase << setw(2) << setfill('0') << (int)NodeList[node].MAC[7] << endl;
+		for (neighbor = 0; neighbor < MAX_NUM_NODES; neighbor++)
+		{
+			cout << "	Node number: " << neighbor << endl;
+			cout << "	MAC: ";
+			for (i = 0; i < 7; i++)
+				cout << hex << uppercase << setw(2) << setfill('0') << (int)NodeList[node].NodeTable[neighbor].MAC[i] << ":";
+			// Print last one and switch back to dec
+			cout << hex << uppercase << setw(2) << setfill('0') << (int)NodeList[node].NodeTable[neighbor].MAC[7] << dec << endl;
+			cout << "	RSSI: " << NodeList[node].NodeTable[neighbor].RSSI << endl;
+		}
 	}
 }
 
@@ -108,7 +116,7 @@ void CalculateRequestChecksum(TxFrame *request)
 
 	for (i=0; i<8; i++)
 		checksum-= request->MAC[i];
-	for (i=0; i<6; i++)
+	for (i=0; i<sizeof(request->payload); i++)
 		checksum -= request->payload[i];
 
 	// Append result back to struct

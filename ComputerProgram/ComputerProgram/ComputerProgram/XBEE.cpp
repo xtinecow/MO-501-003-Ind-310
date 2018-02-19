@@ -215,7 +215,7 @@ void ExitCommandMode (void)
 	CheckForOKResponse();
 }
 
-void CloseSerialPort()
+void CloseSerialPort(void)
 {
 	if (serial.Close())
 		cout << "Port successfully closed" << endl;
@@ -224,4 +224,54 @@ void CloseSerialPort()
 		cout << "Failed to close port "<< endl;
 		WaitForExit();
 	}
+}
+
+void GetHostMAC(void)
+{
+	int nBytesSent, nBytesRead, i;
+	char command[20];
+	char response[20];
+	clock_t timeout;
+
+	cout << "Reading Host MAC... "; 
+
+	// Only read lower half (upper half is always same)
+	command[0] = 'A';
+	command[1] = 'T';
+	command[2] = 'S';
+	command[3] = 'L';
+	command[4] = 13; // Add carriage return 
+	nBytesSent = 0;
+	nBytesSent = serial.SendData(command, 5);
+	if (!nBytesSent)
+	{
+		cout << "Error writing to serial port" << endl;
+		WaitForExit();
+	}
+	timeout = clock() + CLOCKS_PER_SEC; // Give it 1 sec to respond
+	nBytesRead = 0;
+	HostMAC[0] = 0x00; 
+	HostMAC[1] = 0x13;
+	HostMAC[2] = 0xA2;
+	HostMAC[3] = 0x00;
+	while (clock() < timeout)
+	{
+		nBytesRead += serial.ReadData(&response[nBytesRead], 20);
+		if (nBytesRead >= 9)
+		{
+			for (i = 0; i < 4; i++)
+				HostMAC[4 + i] = (unsigned char)ConvertHexByteToInt(&response[2 * i]);
+			cout << "MAC: ";
+			// Print MAC address in hex format
+			for (i = 0; i < 7; i++)
+				cout << hex << uppercase << setw(2) << setfill('0') << (int)HostMAC[i] << ":";
+			// Print last one and set format back to decimal
+			cout << hex << uppercase << setw(2) << setfill('0') << (int)HostMAC[7] << dec << endl;
+			return; 
+		}
+		Sleep(100); // Only pull every 100 ms
+	}
+
+	cout << "Error reading from serial port" << endl;
+	WaitForExit();
 }

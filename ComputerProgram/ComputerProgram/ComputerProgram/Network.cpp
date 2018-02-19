@@ -5,6 +5,7 @@
 using namespace std;
 
 NodeEntry NodeList[MAX_NUM_NODES];
+unsigned char HostMAC[8]; 
 
 // Find all nodes in the network and fill network table with that information
 void NetworkDiscover(void)
@@ -134,7 +135,9 @@ void SendTableRequest(int node)
 	request.FFFE[1] = 0xFE; 
 	request.broadcast = 0; 
 	request.option = 0; 
-	request.payload[0] = 1; // Send a 1 to request table
+	request.payload[0] = 1; // Send a 1, 2 to request table
+	request.payload[1] = 2;
+
 
 	CalculateRequestChecksum(&request); 
 
@@ -148,4 +151,31 @@ void SendTableRequest(int node)
 		WaitForExit();
 	}
 	cout << "done" << endl; 
+}
+
+
+void WaitForTableFrame(void)
+{
+	char response[40]; // Just trying to read 10 bytes for now, change it later
+	int nBytesRead; 
+	clock_t timeout;
+
+	timeout = clock() + 20 * CLOCKS_PER_SEC; // Give it 5 sec to respond
+	nBytesRead = 0;
+	while (clock() < timeout)
+	{
+		nBytesRead += serial.ReadData((char*)&response[nBytesRead], 33);
+		if (nBytesRead >= 33)
+			break;
+		Sleep(100); // Only poll every 100 ms
+	}
+
+
+	if (!nBytesRead)
+		cout << "No Response" << endl;
+	else
+	{
+ 		cout << "Payload[0]: " << response[15] << endl;
+
+	}
 }
