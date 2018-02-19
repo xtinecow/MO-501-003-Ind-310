@@ -39,11 +39,20 @@
 #define ND_RESPONSE_SIZE 50
 
 /////////////// Struct Definitions
+
+// Node info for each node
+struct NodeInfo
+{
+	unsigned char MAC[8]; 
+	int RSSI; 
+
+};
+
+// Each entry will contain the node's MAC and a table of its neighbors
 struct NodeEntry
 {
-	unsigned char MAC[8]; //MAC stored in chars so each byte shows up as 2 chars (just how it's returned, can change later)
-	int RSSI; // Only trying this for now. Will eventually have to be table of neighbors. 
-
+	unsigned char MAC[8];
+	NodeInfo NodeTable[MAX_NUM_NODES]; 
 };
 
 // Frame format for API transmission
@@ -58,7 +67,7 @@ struct TxFrame
 	unsigned char FFFE[2]; // Reserved, always set to 0xfffe
 	unsigned char broadcast;
 	unsigned char option;
-	unsigned char payload[6]; // Small payload for Tx. Note: Max payload size fixed at 73
+	unsigned char payload[18]; // Small payload for Tx. Note: Max payload size fixed at 73
 	unsigned char checksum;
 
 }; // 24 bytes
@@ -79,11 +88,13 @@ void ApplyChangeCommand(void);
 void SetAPIMode(void); 
 void ExitCommandMode(void); 
 void CloseSerialPort(void); 
+void GetHostMAC(void); 
 
 // Network.cpp
 void NetworkDiscover(void);
 void SetNetworkID(void);
 void SendTableRequest(int node);
+void WaitForTableFrame(void); 
 
 // Utilities.cpp
 void ParseNDResponse(char *response, int size);
@@ -95,4 +106,5 @@ void CalculateRequestChecksum(TxFrame *request);
 
 /////////////// Globals
 extern CSerial serial;
-extern NodeEntry NodeList[MAX_NUM_NODES];
+extern NodeEntry NodeList[MAX_NUM_NODES]; // List of all the nodes and their tables
+extern unsigned char HostMAC[8]; 

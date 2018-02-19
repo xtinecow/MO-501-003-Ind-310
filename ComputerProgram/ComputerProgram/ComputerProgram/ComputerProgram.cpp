@@ -22,10 +22,10 @@ int main(int argc, char *argv[])
 		cout << "Invalid port number entered. Please select a number between 0 and 255" << endl;
 		cin >> portNum;
 	}
-
 	 OpenSerialPort(portNum); 
 	 SetATCommandMode(); 
 	 ReadFirmwareVersion(); 
+	 GetHostMAC(); 
 
 	 SetNetworkID(); 
 	 NetworkDiscover();
@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 	  SetAPIMode(); 
 	  ExitCommandMode(); 
 
-	 DisplayNodeList(); 
+	  DisplayNodeList(); 
 
 		while (1)
 		{
@@ -48,6 +48,9 @@ int main(int argc, char *argv[])
 			else
 			{
 				SendTableRequest(0); // Use 'A' to send a table request
+				WaitForTableFrame(); 
+
+
 				keyboardCommand = 0;
 				Sleep(100); // Delay for a bit
 			}
