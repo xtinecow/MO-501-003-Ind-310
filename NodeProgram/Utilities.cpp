@@ -99,3 +99,35 @@ void DisplayNodeTable(void)
         cout << "RSSI: " << NodeTable[node].RSSI << endl;
     }
 }
+
+// Checksum is 0xFF - sum of all bytes from API frame type through payload
+void CalculateFrameChecksum(TxFrame *frame)
+{
+	int i;
+	unsigned char checksum = 0xFF;
+	checksum -= frame->type;
+	checksum -= frame->ID;
+	checksum -= frame->FFFE[0];
+	checksum -= frame->FFFE[1];
+	checksum -= frame->broadcast;
+	checksum -= frame->option;
+
+	for (i=0; i<8; i++)
+		checksum-= frame->MAC[i];
+	for (i=0; i<sizeof(frame->payload); i++)
+		checksum -= frame->payload[i];
+
+	// Append result back to struct
+	frame->checksum = checksum;
+}
+
+// Undo changes done by SplitByteArray
+// Combine src of size 2*size back into dest of size size
+void CombineByteArray(unsigned char *src, unsigned char* dest, int size)
+{
+    int i;
+    for(i=0; i<size; i++)
+    {
+        dest[i] = (src[2*i] << 4) + src[2*i+1];
+    }
+}

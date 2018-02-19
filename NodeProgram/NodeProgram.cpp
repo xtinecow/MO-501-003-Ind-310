@@ -4,12 +4,10 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-     char response[20];
-     int numBytesRead = 0;
 
     OpenXbeeConnection();
     SetATCommandMode();
-
+    GetNodeMAC();
     SetNetworkID();
     FindNeighbors();
 
@@ -22,8 +20,6 @@ int main(int argc, char *argv[])
 
 
     WaitForNetworkCommand();
-
-
 
     // Close serial port
     serial.Close();

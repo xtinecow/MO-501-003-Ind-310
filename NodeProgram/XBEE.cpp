@@ -18,10 +18,6 @@ void OpenXbeeConnection (void)
 void SetATCommandMode (void)
 {
     int i;
-    char command[20];
-    char response[20];
-
-    int numBytesRead =0;
 
     std::cout << "Putting module in command mode... ";
     usleep(1000000); // wait for required guard time (1 000 000 microseconds)
@@ -66,8 +62,44 @@ void ExitCommandMode(void)
     CheckForOK();
 }
 
+void GetNodeMAC(void)
+{
+    int numBytesRead, i;
+    char response[12];
+
+    std::cout << "Reading Node MAC... ";
+
+    // Only read lower half since upper half is always the same
+    serial << "ATSL\r";
+    numBytesRead = 0;
+
+   // Set fixed upper bytes
+    NodeMAC[0] = 0x00;
+    NodeMAC[1] = 0x13;
+    NodeMAC[2] = 0xA2;
+    NodeMAC[3] = 0x00;
+
+    while (numBytesRead < 9)
+    {
+        usleep(1000); // Wait 1ms before checking
+        numBytesRead += serial.CustomRead(&response[numBytesRead], 9);
+    }
+
+
+    // Now grab rest from response
+    for(i=0; i<4; i++)
+        NodeMAC[4+i] = (unsigned char)ConvertHexByteToInt(&response[2*i]);
+
+    std:: cout << "MAC: ";
+    // Print MAC address in hex
+    for(i=0; i<7; i++)
+        std::cout << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << (int)NodeMAC[i] << ":";
+    // Print last one and set format back to decimal
+    std::cout << std::hex << std::uppercase << std::setw(2) << std::setfill('0') << (int)NodeMAC[7] << std::dec << std::endl;
+
+}
+
 // Checks serial port for OK response
-// Clean up code to always use this function later.
 void CheckForOK (void)
 {
     char response[4];
@@ -81,7 +113,6 @@ void CheckForOK (void)
 }
 
 // Applies change to XBEE module
-// Clean up code to always use this function later.
 void ApplyChange(void)
 {
     std::cout << "Applying change..." << std::endl;

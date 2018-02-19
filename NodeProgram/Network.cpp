@@ -3,7 +3,8 @@
 
 
 NodeEntry NodeTable[MAX_NUM_NODES];
-char HostMAC[8];
+unsigned char HostMAC[8];
+unsigned char NodeMAC[8];
 
 
 void FindNeighbors (void)
@@ -55,7 +56,7 @@ void WaitForNetworkCommand(void)
 {
     int i;
     char response[2*NETWORK_REQUEST_SIZE];
-    char *commandPointer;
+    unsigned char *commandPointer;
     int numBytesRead = 0;
 
 
@@ -68,7 +69,7 @@ void WaitForNetworkCommand(void)
     }
 
     // Look for start of request (0x7e) to align data
-    commandPointer = response;
+    commandPointer = (unsigned char*)response;
     i=0;
     while(*commandPointer != 0x7e)
     {
@@ -81,13 +82,82 @@ void WaitForNetworkCommand(void)
         }
     }
 
-    // Copy MAC of requester
-    for(i=0; i<8; i++)
-        HostMAC[i] = commandPointer[REQUEST_MAC_OFFSET+i];
+    // Copy MAC of requester. Doesn't work because of sign corruption.
+//    for(i=0; i<8; i++)
+//        HostMAC[i] = commandPointer[REQUEST_MAC_OFFSET+i];
 
-    // Now look for payload. Only care about first byte.
-    if(commandPointer[REQUEST_PAYLOAD_OFFSET] == 1)
-        cout << "Table Requested!!!" << endl;
+    // Now look for payload. Only care about first 2 bytes for header(1, 2)
+    if(commandPointer[REQUEST_PAYLOAD_OFFSET] == 1 && commandPointer[REQUEST_PAYLOAD_OFFSET+1] == 2)
+    {
+        // Undo byte splitting to get MAC from rest of payload (next 16 bytes)
+        CombineByteArray(&commandPointer[REQUEST_PAYLOAD_OFFSET+2],HostMAC, 8);
+
+        // HostMAC seems to be corrupted. Hardcode for now.
+        cout << "HostMAC: ";
+        for(i=0; i<8; i++)
+            cout << (int)HostMAC[i] << " ";
+        HostMAC[0] = 0x00;
+        HostMAC[1] = 0x13;
+        HostMAC[2] = 0xA2;
+        HostMAC[3] = 0x00;
+        HostMAC[4] = 0x41;
+        HostMAC[5] = 0x05;
+        HostMAC[6] = 0xE6;
+        HostMAC[7] = 0x14;
+
+        cout << endl << "Actual MAC: ";
+        for(i=0; i<8; i++)
+            cout << (int)HostMAC[i] << " ";
+        SendTableFrame();
 
 
+
+    }
+
+
+}
+
+
+void SendTableFrame(void)
+{
+	int i, nBytesSent;
+	TxFrame frame;
+	char* framePointer;
+	string message;
+
+	frame.delim = 0x7E;
+	frame.length[0] = 0; // Way less than 1 byte so MSB is always 0
+	frame.length[1] = sizeof(TxFrame) - 4; // 4 header bytes not counted? (Based on XCTU Frame Generator)
+	frame.type = 0x10; // Request type
+	frame.ID = 1;
+	for (i = 0; i < 8; i++)
+		frame.MAC[i] = HostMAC[i];
+
+	frame.FFFE[0] = 0xFF;
+	frame.FFFE[1] = 0xFE;
+	frame.broadcast = 0;
+	frame.option = 0;
+	frame.payload[0] = 1; // Just try sending a 3 for now
+	frame.payload[1] = 2; // Just try sending a 3 for now
+	frame.payload[2] = 3; // Just try sending a 3 for now
+	frame.payload[3] = 4; // Just try sending a 3 for now
+	frame.payload[4] = 5; // Just try sending a 3 for now
+
+
+	CalculateFrameChecksum(&frame);
+
+	// Send it off
+	cout << "Sending request for table... ";
+	// Writing a whole block using serial.write doesn't work for some reason
+    // serial.write((char*)&frame, sizeof(TxFrame));
+
+    // Seems to only work if I append it to a string first
+    framePointer = (char*)&frame;
+    for (i=0; i<sizeof(TxFrame); i++)
+    {
+        message.append(1, *framePointer);
+        framePointer++;
+    }
+        serial << message;
+    cout << "done." << endl;
 }

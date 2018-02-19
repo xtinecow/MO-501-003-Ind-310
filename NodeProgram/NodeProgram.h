@@ -18,16 +18,15 @@
 // 7E
 // Length MSB
 // Length LSB
-// 90
+// 90 (Frame type)
 // MAC[8]
 // FFFE
 // c1
-// Payload[6]
+// Payload[18]
 // Checksum
-#define NETWORK_REQUEST_SIZE 22
+#define NETWORK_REQUEST_SIZE 34
 #define REQUEST_MAC_OFFSET 4
 #define REQUEST_PAYLOAD_OFFSET 15
-#define TABLE_REQUEST 1
 
 // Format is as follows:
 // FFFE
@@ -53,6 +52,7 @@ void OpenXbeeConnection (void);
 void SetATCommandMode (void);
 void SetAPIMode(void);
 void ExitCommandMode(void);
+void GetNodeMAC(void);
 void CheckForOK (void);
 void ApplyChange(void);
 
@@ -61,11 +61,14 @@ void ApplyChange(void);
 void FindNeighbors (void);
 void SetNetworkID (void);
 void WaitForNetworkCommand(void);
+void SendTableFrame(void);
 
 //Utilities.cpp
 int ConvertHexByteToInt (char* pointer);
 void ParseFNResponse(char *response, int size);
 void DisplayNodeTable(void);
+// void CalculateFrameChecksum(TxFrame *frame); // prototype moved after struct
+void CombineByteArray(unsigned char *src, unsigned char* dest, int size);
 
 ///////////// Structure for node table
 struct NodeEntry
@@ -75,8 +78,31 @@ struct NodeEntry
 };
 
 
-
 ///////////// Globals
 extern LibSerial::SerialStream serial;
 extern NodeEntry NodeTable[MAX_NUM_NODES];
-extern char HostMAC[8];
+extern unsigned char HostMAC[8];
+extern unsigned char NodeMAC[8];
+
+
+
+// Frame to send table back to host
+struct TxFrame
+{
+    unsigned char delim;
+    unsigned char length[2];
+    unsigned char type;
+    unsigned char ID;
+    unsigned char MAC[8];
+    unsigned char FFFE[2];
+    unsigned char broadcast;
+    unsigned char option;
+    // Keep 18 bytes reserved for GNSS info (not currently used):
+    // 2 byte flag, 8 byte lat, 8 byte long
+    // unsigned char payload[sizeof(NodeTable)+18];
+    unsigned char payload[6];
+    unsigned char checksum;
+};
+
+// Had to move prototype after struct definition for this
+void CalculateFrameChecksum(TxFrame *frame);
