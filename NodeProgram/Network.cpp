@@ -65,7 +65,6 @@ void WaitForNetworkCommand(void)
         usleep(1000000); // Wait 1ms before checking
         // Check for a little bit more than size in case of garbage carriage returns
         numBytesRead += serial.CustomRead(&response[numBytesRead], 3+NETWORK_REQUEST_SIZE);
-        printf("Waiting for table request...\n");
     }
 
     // Look for start of request (0x7e) to align data
@@ -91,23 +90,11 @@ void WaitForNetworkCommand(void)
     {
         // Undo byte splitting to get MAC from rest of payload (next 16 bytes)
         CombineByteArray(&commandPointer[REQUEST_PAYLOAD_OFFSET+2],HostMAC, 8);
+        std:: cout << "Sending table to MAC: ";
+        for(i=0; i<7; i++)
+            cout << uppercase << setw(2) << setfill('0') << (int)HostMAC[i] << ":";
+        cout << uppercase << setw(2) << setfill('0') << (int)HostMAC[7] << endl;
 
-        // HostMAC seems to be corrupted. Hardcode for now.
-        cout << "HostMAC: ";
-        for(i=0; i<8; i++)
-            cout << (int)HostMAC[i] << " ";
-        HostMAC[0] = 0x00;
-        HostMAC[1] = 0x13;
-        HostMAC[2] = 0xA2;
-        HostMAC[3] = 0x00;
-        HostMAC[4] = 0x41;
-        HostMAC[5] = 0x05;
-        HostMAC[6] = 0xE6;
-        HostMAC[7] = 0x14;
-
-        cout << endl << "Actual MAC: ";
-        for(i=0; i<8; i++)
-            cout << (int)HostMAC[i] << " ";
         SendTableFrame();
 
 
