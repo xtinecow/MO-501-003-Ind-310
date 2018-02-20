@@ -48,7 +48,8 @@ int main(int argc, char *argv[])
 			else
 			{
 				SendTableRequest(0); // Use 'A' to send a table request
-				WaitForTableFrame(); 
+				WaitForTableFrame(0); 
+				DisplayNodeList(); 
 
 
 				keyboardCommand = 0;

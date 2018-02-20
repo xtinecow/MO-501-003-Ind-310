@@ -89,7 +89,7 @@ void DisplayNodeList(void)
 		for (i = 0; i < 7; i++)
 			cout << hex << uppercase << setw(2) << setfill('0') << (int)NodeList[node].MAC[i] << ":";
 		cout << hex << uppercase << setw(2) << setfill('0') << (int)NodeList[node].MAC[7] << endl;
-		for (neighbor = 0; neighbor < MAX_NUM_NODES; neighbor++)
+		for (neighbor = 0; neighbor < MAX_NUM_NODES-1; neighbor++)
 		{
 			cout << "	Node number: " << neighbor << endl;
 			cout << "	MAC: ";
@@ -133,5 +133,16 @@ void SplitByteArray(unsigned char *src, unsigned char* dest, int size)
 	{
 		dest[2*i] = (src[i] & 0xf0) >> 4; 
 		dest[2 * i + 1] = (src[i] & 0x0f);
+	}
+}
+
+// Undo changes done by SplitByteArray
+// Combine src of size 2*size back into dest of size size
+void CombineByteArray(unsigned char *src, unsigned char* dest, int size)
+{
+	int i;
+	for (i = 0; i<size; i++)
+	{
+		dest[i] = (src[2 * i] << 4) + src[2 * i + 1];
 	}
 }

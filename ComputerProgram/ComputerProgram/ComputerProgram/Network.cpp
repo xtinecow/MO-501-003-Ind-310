@@ -157,23 +157,96 @@ void SendTableRequest(int node)
 }
 
 
-void WaitForTableFrame(void)
+void WaitForTableFrame(int node)
 {
-	char response[40]; // Just trying to read 10 bytes for now, change it later
-	int nBytesRead; 
+	char response[200]; // Just trying to read 10 bytes for now, change it later
+	int nBytesRead, i, neighbor; 
+	int payloadOffset; 
 	clock_t timeout;
+	unsigned char sourceMac[8];
 
-	timeout = clock() + 20 * CLOCKS_PER_SEC; // Give it 5 sec to respond
+	timeout = clock() + 2 * CLOCKS_PER_SEC; // Give it 2 sec to respond
 	nBytesRead = 0;
+	payloadOffset = 26;
 	while (clock() < timeout)
 	{
-		nBytesRead += serial.ReadData((char*)&response[nBytesRead], 33);
-		if (nBytesRead >= 33)
-			break;
+		// First payload: Looking for 99 bytes:
+		// First 11 bytes redundant (automatic request response)
+		// After that is start of table frame
+		// 15 bytes of redundant header info
+		// Next 72 bytes is payload 
+		// Last is checksum
+
+		// Second payload: 
+		// 88 bytes
+
+		// Total: 187 bytes
+		nBytesRead += serial.ReadData((char*)&response[nBytesRead], 98);
+		if (nBytesRead >= 187)
+		{
+			// Check payload header of 3 for valid payload. First packet should have sequence of 0. 
+			if (response[payloadOffset] == 3 && response[payloadOffset + 1] == 0)
+			{
+				// First is source MAC address 
+				payloadOffset += 2;
+				CombineByteArray((unsigned char*)&response[payloadOffset], sourceMac, 8);
+				// Now check if it matches expected MAC
+				for (i = 0; i < 8; i++)
+				{
+					if (sourceMac[i] != NodeList[node].MAC[i])
+					{
+						cout << "Error. Packet came from unexpected node." << endl;
+						return;
+					}
+				}
+				payloadOffset += 16;
+				// All checks out, copy in table. 
+				for (neighbor = 0; neighbor < 3; neighbor++)
+				{
+					// MAC
+					CombineByteArray((unsigned char*)&response[payloadOffset], NodeList[node].NodeTable[neighbor].MAC, 8);
+					payloadOffset += 16;
+					// RSSI
+					CombineByteArray((unsigned char*)&response[payloadOffset], (unsigned char*)&NodeList[node].NodeTable[neighbor].RSSI, 1);
+					payloadOffset += 2;
+				}
+			}
+			// Now move to second frame
+			payloadOffset = 114;
+			// Check payload header of 3 for valid payload. Second frame should have sequence of 1. 
+			if (response[payloadOffset] == 3 && response[payloadOffset + 1] == 1)
+			{
+				// First is source MAC address 
+				payloadOffset += 2;
+				CombineByteArray((unsigned char*)&response[payloadOffset], sourceMac, 8);
+				// Now check if it matches expected MAC
+				for (i = 0; i < 8; i++)
+				{
+					if (sourceMac[i] != NodeList[node].MAC[i])
+					{
+						cout << "Error. Packet came from unexpected node." << endl;
+						return;
+					}
+				}
+				payloadOffset += 16;
+				// All checks out, copy in table for last 2 neighbors
+				for (neighbor = 0; neighbor < 2; neighbor++)
+				{
+					// MAC
+					CombineByteArray((unsigned char*)&response[payloadOffset], NodeList[node].NodeTable[neighbor + 3].MAC, 8);
+					payloadOffset += 16;
+					// RSSI
+					CombineByteArray((unsigned char*)&response[payloadOffset], (unsigned char*)&NodeList[node].NodeTable[neighbor + 3].RSSI, 1);
+					payloadOffset += 2;
+				}
+			}
+
+			return;
+		}
+			
 		Sleep(100); // Only poll every 100 ms
 	}
 
 
-	if (!nBytesRead)
-		cout << "No Response" << endl;
+	 cout << "No valid response. Only " << nBytesRead << "bytes read." << endl;
 }

@@ -52,7 +52,7 @@ struct NodeInfo
 struct NodeEntry
 {
 	unsigned char MAC[8];
-	NodeInfo NodeTable[MAX_NUM_NODES]; 
+	NodeInfo NodeTable[MAX_NUM_NODES-1]; 
 };
 
 // Frame format for API transmission
@@ -94,7 +94,7 @@ void GetHostMAC(void);
 void NetworkDiscover(void);
 void SetNetworkID(void);
 void SendTableRequest(int node);
-void WaitForTableFrame(void); 
+void WaitForTableFrame(int node); 
 
 // Utilities.cpp
 void ParseNDResponse(char *response, int size);
@@ -102,6 +102,7 @@ int ConvertHexByteToInt(char* pointer);
 void DisplayNodeList(void); 
 void CalculateRequestChecksum(TxFrame *request);
 void SplitByteArray(unsigned char *src, unsigned char* dest, int size);
+void CombineByteArray(unsigned char *src, unsigned char* dest, int size); 
 
 
 
