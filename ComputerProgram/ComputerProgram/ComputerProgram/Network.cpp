@@ -138,6 +138,9 @@ void SendTableRequest(int node)
 	request.payload[0] = 1; // Send a 1, 2 to request table
 	request.payload[1] = 2;
 
+	// Split HostMAC into rest of payload (16 bytes total) 
+	SplitByteArray(HostMAC, &request.payload[2], 8); 
+
 
 	CalculateRequestChecksum(&request); 
 
@@ -173,9 +176,4 @@ void WaitForTableFrame(void)
 
 	if (!nBytesRead)
 		cout << "No Response" << endl;
-	else
-	{
- 		cout << "Payload[0]: " << response[15] << endl;
-
-	}
 }

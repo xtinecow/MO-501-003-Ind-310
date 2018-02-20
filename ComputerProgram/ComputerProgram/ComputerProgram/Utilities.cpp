@@ -122,3 +122,16 @@ void CalculateRequestChecksum(TxFrame *request)
 	// Append result back to struct
 	request->checksum = checksum; 
 }
+
+// Grabs size bytes from source and copy each one into 2 bytes in dest. 
+// First digit of source is first byte of dest, second digit is second byte
+// Necessary for MAC transfer because serial class does not support unsigned char
+void SplitByteArray(unsigned char *src, unsigned char* dest, int size)
+{
+	int i; 
+	for (i = 0; i < size; i++)
+	{
+		dest[2*i] = (src[i] & 0xf0) >> 4; 
+		dest[2 * i + 1] = (src[i] & 0x0f);
+	}
+}

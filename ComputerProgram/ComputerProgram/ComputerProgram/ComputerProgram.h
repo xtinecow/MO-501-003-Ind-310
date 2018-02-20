@@ -101,6 +101,7 @@ void ParseNDResponse(char *response, int size);
 int ConvertHexByteToInt(char* pointer);
 void DisplayNodeList(void); 
 void CalculateRequestChecksum(TxFrame *request);
+void SplitByteArray(unsigned char *src, unsigned char* dest, int size);
 
 
 
