@@ -95,8 +95,12 @@ void WaitForNetworkCommand(void)
             cout << uppercase << setw(2) << setfill('0') << (int)HostMAC[i] << ":";
         cout << uppercase << setw(2) << setfill('0') << (int)HostMAC[7] << endl;
 
-        SendTableFrame();
-
+        // Send first 3 nodes
+        SendTableFrame(0);
+        FlushAPIBuffer();
+        // Send last 2
+        SendTableFrame(1);
+        FlushAPIBuffer();
 
 
     }
@@ -105,12 +109,13 @@ void WaitForNetworkCommand(void)
 }
 
 
-void SendTableFrame(void)
+void SendTableFrame(int sequence)
 {
 	int i, nBytesSent;
 	TxFrame frame;
 	char* framePointer;
 	string message;
+	unsigned char temp;
 
 	frame.delim = 0x7E;
 	frame.length[0] = 0; // Way less than 1 byte so MSB is always 0
@@ -124,11 +129,39 @@ void SendTableFrame(void)
 	frame.FFFE[1] = 0xFE;
 	frame.broadcast = 0;
 	frame.option = 0;
-	frame.payload[0] = 1; // Just try sending a 3 for now
-	frame.payload[1] = 2; // Just try sending a 3 for now
-	frame.payload[2] = 3; // Just try sending a 3 for now
-	frame.payload[3] = 4; // Just try sending a 3 for now
-	frame.payload[4] = 5; // Just try sending a 3 for now
+	frame.payload[0] = 3; // Table header is a 3
+	frame.payload[1] = sequence; // Sequence number
+	SplitByteArray(NodeMAC, &frame.payload[2], 8); // Next 8 spots is this node's MAC
+
+	if(!sequence)
+	{
+        // Send first 3 Nodes the first time around
+        for(i=0; i<3; i++)
+        {
+            // Every iteration adds 16+2 = 18 bytes
+            SplitByteArray(NodeTable[i].MAC, &frame.payload[i*18+18], 8); // Copy MAC
+
+            // Need to split RSSI too
+            // RSSI is short but only LSB holds info. Split LSB into 2 bytes
+            temp =((unsigned char)NodeTable[i].RSSI & 0x00ff);
+            SplitByteArray(&temp, &frame.payload[i*18+34], 1);
+        }
+    }
+    else
+    {
+        // Send last 2 nodes
+        for(i=0; i<2; i++)
+        {
+            // Every iteration adds 16+2 = 18 bytes
+            SplitByteArray(NodeTable[3+i].MAC, &frame.payload[i*18+18], 8); // Copy MAC
+
+            // Need to split RSSI too
+            // RSSI is short but only LSB holds info. Split LSB into 2 bytes
+            temp =((unsigned char)NodeTable[3+i].RSSI & 0x00ff);
+            SplitByteArray(&temp, &frame.payload[i*18+34], 1);
+        }
+    }
+
 
 
 	CalculateFrameChecksum(&frame);

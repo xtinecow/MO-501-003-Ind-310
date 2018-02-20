@@ -25,7 +25,14 @@ void ParseFNResponse(char *response, int size)
             macIndex = node*FN_RESPONSE_SIZE+14+2*macByte; // Skip carriage return in middle of MAC
             NodeTable[node].MAC[4+macByte] = (unsigned char)ConvertHexByteToInt(&response[macIndex]);
         }
-        NodeTable[node].RSSI = ConvertHexByteToInt(&response[node*FN_RESPONSE_SIZE+46]);
+        NodeTable[node].RSSI = (short)ConvertHexByteToInt(&response[node*FN_RESPONSE_SIZE+46]);
+    }
+    // Set remaining nodes to 0
+    for(node=numNodes; node<MAX_NUM_NODES; node++)
+    {
+        for(macByte=0; macByte<8; macByte++)
+            NodeTable[node].MAC[macByte] = 0;
+        NodeTable[node].RSSI = 0;
     }
 }
 
@@ -121,6 +128,20 @@ void CalculateFrameChecksum(TxFrame *frame)
 	frame->checksum = checksum;
 }
 
+
+// Grabs size bytes from source and copy each one into 2 bytes in dest.
+// First digit of source is first byte of dest, second digit is second byte
+// Necessary for MAC transfer because serial class does not support unsigned char
+void SplitByteArray(unsigned char *src, unsigned char* dest, int size)
+{
+	int i;
+	for (i = 0; i < size; i++)
+	{
+		dest[2*i] = (src[i] & 0xf0) >> 4;
+		dest[2 * i + 1] = (src[i] & 0x0f);
+	}
+}
+
 // Undo changes done by SplitByteArray
 // Combine src of size 2*size back into dest of size size
 void CombineByteArray(unsigned char *src, unsigned char* dest, int size)
@@ -130,4 +151,19 @@ void CombineByteArray(unsigned char *src, unsigned char* dest, int size)
     {
         dest[i] = (src[2*i] << 4) + src[2*i+1];
     }
+}
+
+// Sending an API frame returns a redundant response of 11 bytes.
+// This will clear the serial buffer for the next command
+void FlushAPIBuffer (void)
+{
+    char response[22];
+    int numBytesRead = 0;
+    std::cout << "Flushing serial buffer... ";
+    while(numBytesRead < 11)
+    {
+        usleep(1000); // Wait 1ms before checking
+        numBytesRead += serial.CustomRead(&response[numBytesRead], 11);
+    }
+    std::cout << "done." << std::endl;
 }

@@ -12,7 +12,7 @@
 
 
 ////////////// Definitions
-#define MAX_NUM_NODES 6
+#define MAX_NUM_NODES 5 // 5 neighboring nodes maximum
 
 //Format is as follows:
 // 7E
@@ -61,7 +61,7 @@ void ApplyChange(void);
 void FindNeighbors (void);
 void SetNetworkID (void);
 void WaitForNetworkCommand(void);
-void SendTableFrame(void);
+void SendTableFrame(int sequence);
 
 //Utilities.cpp
 int ConvertHexByteToInt (char* pointer);
@@ -69,12 +69,14 @@ void ParseFNResponse(char *response, int size);
 void DisplayNodeTable(void);
 // void CalculateFrameChecksum(TxFrame *frame); // prototype moved after struct
 void CombineByteArray(unsigned char *src, unsigned char* dest, int size);
+void SplitByteArray(unsigned char *src, unsigned char* dest, int size);
+void FlushAPIBuffer (void);
 
 ///////////// Structure for node table
 struct NodeEntry
 {
-    char MAC[8];
-    int RSSI;
+    unsigned char MAC[8];
+    short RSSI;
 };
 
 
@@ -87,6 +89,13 @@ extern unsigned char NodeMAC[8];
 
 
 // Frame to send table back to host
+// Payload will be split in following way:
+// header: 1 byte
+// sequence: 1 byte
+// NodeMAC: 2*8=16 bytes
+// 3 Neighours = 3*(2*8+2) = 54 bytes
+// Total = 72 bytes
+// For second frame, third neighbor spot will be replaced by GNSS info
 struct TxFrame
 {
     unsigned char delim;
@@ -97,10 +106,8 @@ struct TxFrame
     unsigned char FFFE[2];
     unsigned char broadcast;
     unsigned char option;
-    // Keep 18 bytes reserved for GNSS info (not currently used):
-    // 2 byte flag, 8 byte lat, 8 byte long
-    // unsigned char payload[sizeof(NodeTable)+18];
-    unsigned char payload[6];
+    unsigned char payload[72];
+    // unsigned char payload[6];
     unsigned char checksum;
 };
 

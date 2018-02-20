@@ -32,11 +32,12 @@ void SetATCommandMode (void)
 
     CheckForOK();
 
-    std::cout<<"Now setting timeout to max value... " << std::endl;
-    serial << "ATCT0X1770\r";
-
-    CheckForOK();
-    ApplyChange();
+//   Comment this out for now to speed it up. Don't think it was necessary
+//    std::cout<<"Now setting timeout to max value... " << std::endl;
+//    serial << "ATCT0X1770\r";
+//
+//    CheckForOK();
+//    ApplyChange();
 
 }
 

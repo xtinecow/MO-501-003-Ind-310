@@ -18,8 +18,18 @@ int main(int argc, char *argv[])
     SetAPIMode();
     ExitCommandMode();
 
+    while(1)
+    {
+        WaitForNetworkCommand();
 
-    WaitForNetworkCommand();
+        // Now update neighbor info
+        SetATCommandMode();
+        FindNeighbors();
+        SetATCommandMode();
+        SetAPIMode();
+        ExitCommandMode();
+    }
+
 
     // Close serial port
     serial.Close();
