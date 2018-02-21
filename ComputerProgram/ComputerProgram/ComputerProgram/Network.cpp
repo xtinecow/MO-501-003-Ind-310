@@ -59,7 +59,7 @@ void NetworkDiscover(void)
 		cout << "Error writing to serial port" << endl;
 		WaitForExit();
 	}
-	timeout = clock() + 13*CLOCKS_PER_SEC; // Give it 10 sec to respond
+	timeout = clock() + 14*CLOCKS_PER_SEC; // Give it 10 sec to respond
 	nBytesRead = 0;
 	while (clock() < timeout)
 	{
@@ -79,6 +79,45 @@ void NetworkDiscover(void)
 		ParseNDResponse(response, nBytesRead);
 
 	}
+}
+
+// Computer XBEE module will act as Node 0 and us this to find all its neighbors
+// Note that this has the same response size/type as network discover
+void FindNeighbors(void)
+{
+	int nBytesSent, nBytesRead, i;
+	char command[20];
+	char response[MAX_NUM_NODES*ND_RESPONSE_SIZE];
+	clock_t timeout;
+	// Now send network discover command
+	command[0] = 'A';
+	command[1] = 'T';
+	command[2] = 'F';
+	command[3] = 'N';
+	command[4] = 13; // Add carriage return 
+
+	nBytesSent = 0;
+	nBytesSent = serial.SendData(command, 5);
+	cout << "Sending Find Neighbor command..."; 
+	if (!nBytesSent)
+	{
+		cout << "Error writing to serial port" << endl;
+		WaitForExit();
+	}
+	timeout = clock() + 14 * CLOCKS_PER_SEC; // Give it 10 sec to respond
+	nBytesRead = 0;
+	while (clock() < timeout)
+	{
+		// Max number of neighbors is the number of nodes -1
+		nBytesRead += serial.ReadData((char*)&response[nBytesRead], (MAX_NUM_NODES-1)*ND_RESPONSE_SIZE);
+		if (nBytesRead >= (MAX_NUM_NODES - 1)*ND_RESPONSE_SIZE)
+			break;
+		Sleep(100); // Only poll every 100 ms
+	}
+
+		ParseFNResponse(response, nBytesRead);
+		cout << "done" << endl; 
+
 }
 
 void SetNetworkID(void)
@@ -129,7 +168,7 @@ void SendTableRequest(int node)
 	request.type = 0x10; // Request type
 	request.ID = 1; 
 	for (i = 0; i < 8; i++)
-		request.MAC[i] = NodeList[0].MAC[i]; 
+		request.MAC[i] = NodeList[node].MAC[i]; 
 
 	request.FFFE[0] = 0xFF; 
 	request.FFFE[1] = 0xFE; 
@@ -145,7 +184,7 @@ void SendTableRequest(int node)
 	CalculateRequestChecksum(&request); 
 
 	// Send it off
-	cout << "Sending request for table... ";
+	cout << "Sending request for table from node " << node << "... ";
 	nBytesSent = 0;
 	nBytesSent = serial.SendData((char*)&request, sizeof(TxFrame));
 	if (!nBytesSent)
@@ -159,7 +198,7 @@ void SendTableRequest(int node)
 
 void WaitForTableFrame(int node)
 {
-	char response[200]; // Just trying to read 10 bytes for now, change it later
+	char response[300]; // Just trying to read 10 bytes for now, change it later
 	int nBytesRead, i, neighbor; 
 	int payloadOffset; 
 	clock_t timeout;

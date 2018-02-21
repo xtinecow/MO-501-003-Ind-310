@@ -4,19 +4,60 @@ using namespace std;
 void ParseNDResponse(char *response, int size)
 {
 	int node, macByte, numNodes, macIndex; 
+		while (response[0] != 'F')
+	{
+		response++; // Increment pointer when start of data is off
+		size--; // Discarding first byte so size has to be decreased accordingly
+		cout << "Aligning data..." << endl;
+	}
+	numNodes = size / ND_RESPONSE_SIZE;
+	if (numNodes > MAX_NUM_NODES - 1)
+	{
+		// Should never happen since this does not return computer node (node 0)
+		cout << "Error. Network Discover returned too many nodes" << endl; 
+		return; 
+	}
+	for (node = 0; node<numNodes; node++)
+	{
+		for (macByte = 0; macByte<4; macByte++)
+		{
+			macIndex = node*ND_RESPONSE_SIZE + 5 + 2*macByte; // Offset of 5 for FFFE\r
+			// Update Starting from node 1 (node 0 updated by find neighbors)
+			NodeList[node+1].MAC[macByte] = (unsigned char)ConvertHexByteToInt(&response[macIndex]);
+		}
+		for (macByte = 0; macByte<4; macByte++)
+		{
+			macIndex = node*ND_RESPONSE_SIZE + 14 + 2*macByte; // Skip carriage return in middle of MAC
+			NodeList[node+1].MAC[4 + macByte] = (unsigned char)ConvertHexByteToInt(&response[macIndex]);
+		}
+	}
+}
+
+// Same as Parse ND response but stores results for node 0's
+// Also actually cares about RSSI
+void ParseFNResponse(char *response, int size)
+{
+	int node, macByte, numNodes, macIndex;
+	while (response[0] != 'F')
+	{
+		response++; // Increment pointer when start of data is off
+		size--; // Discarding first byte so size has to be decreased accordingly
+		cout << "Aligning data... " << response[0] << endl;
+	}
 
 	numNodes = size / ND_RESPONSE_SIZE;
 	for (node = 0; node<numNodes; node++)
 	{
 		for (macByte = 0; macByte<4; macByte++)
 		{
-			macIndex = node*ND_RESPONSE_SIZE + 5 + 2*macByte; // Offset of 5 for FFFE\r
-			NodeList[node].MAC[macByte] = (unsigned char)ConvertHexByteToInt(&response[macIndex]);
+			macIndex = node*ND_RESPONSE_SIZE + 5 + 2 * macByte; // Offset of 5 for FFFE\r
+			NodeList[0].NodeTable[node].MAC[macByte] = (unsigned char)ConvertHexByteToInt(&response[macIndex]);
 		}
 		for (macByte = 0; macByte<4; macByte++)
 		{
-			macIndex = node*ND_RESPONSE_SIZE + 14 + 2*macByte; // Skip carriage return in middle of MAC
-			NodeList[node].MAC[4 + macByte] = (unsigned char)ConvertHexByteToInt(&response[macIndex]);
+			macIndex = node*ND_RESPONSE_SIZE + 14 + 2 * macByte; // Skip carriage return in middle of MAC
+			NodeList[0].NodeTable[node].MAC[4 + macByte] = (unsigned char)ConvertHexByteToInt(&response[macIndex]);
+			NodeList[0].NodeTable[node].RSSI = (short)ConvertHexByteToInt(&response[node*ND_RESPONSE_SIZE + 46]);
 		}
 	}
 }
@@ -81,6 +122,7 @@ void DisplayNodeList(void)
 {
 	int i, node, neighbor;
 
+	ClearScreen(); 
 	for (node = 0; node < MAX_NUM_NODES; node++)
 	{
 		cout << "Node number: " << node << endl;
@@ -91,13 +133,13 @@ void DisplayNodeList(void)
 		cout << hex << uppercase << setw(2) << setfill('0') << (int)NodeList[node].MAC[7] << endl;
 		for (neighbor = 0; neighbor < MAX_NUM_NODES-1; neighbor++)
 		{
-			cout << "	Node number: " << neighbor << endl;
+			cout << "	Node number: " << neighbor << "		";
 			cout << "	MAC: ";
 			for (i = 0; i < 7; i++)
 				cout << hex << uppercase << setw(2) << setfill('0') << (int)NodeList[node].NodeTable[neighbor].MAC[i] << ":";
 			// Print last one and switch back to dec
-			cout << hex << uppercase << setw(2) << setfill('0') << (int)NodeList[node].NodeTable[neighbor].MAC[7] << dec << endl;
-			cout << "	RSSI: " << NodeList[node].NodeTable[neighbor].RSSI << endl;
+			cout << hex << uppercase << setw(2) << setfill('0') << (int)NodeList[node].NodeTable[neighbor].MAC[7] << dec << "	";
+			cout << "	RSSI: " << NodeList[node].NodeTable[neighbor].RSSI << endl; 
 		}
 	}
 }
@@ -145,4 +187,42 @@ void CombineByteArray(unsigned char *src, unsigned char* dest, int size)
 	{
 		dest[i] = (src[2 * i] << 4) + src[2 * i + 1];
 	}
+}
+
+// Functioned copied from http://www.cplusplus.com/articles/4z18T05o/
+void ClearScreen(void)
+{
+	HANDLE                     hStdOut;
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	DWORD                      count;
+	DWORD                      cellCount;
+	COORD                      homeCoords = { 0, 0 };
+
+	hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (hStdOut == INVALID_HANDLE_VALUE) return;
+
+	/* Get the number of cells in the current buffer */
+	if (!GetConsoleScreenBufferInfo(hStdOut, &csbi)) return;
+	cellCount = csbi.dwSize.X *csbi.dwSize.Y;
+
+	/* Fill the entire buffer with spaces */
+	if (!FillConsoleOutputCharacter(
+		hStdOut,
+		(TCHAR) ' ',
+		cellCount,
+		homeCoords,
+		&count
+	)) return;
+
+	/* Fill the entire buffer with the current colors and attributes */
+	if (!FillConsoleOutputAttribute(
+		hStdOut,
+		csbi.wAttributes,
+		cellCount,
+		homeCoords,
+		&count
+	)) return;
+
+	/* Move the cursor home */
+	SetConsoleCursorPosition(hStdOut, homeCoords);
 }

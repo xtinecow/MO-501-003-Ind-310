@@ -37,37 +37,37 @@ void SetATCommandMode(void)
 		}
 		Sleep(50); 
 	}
-	cout << "done." << endl;
+	cout << "done.	"; 
 	Sleep(1000); // wait for the required guard time (default of 1000 ms)
 
 	CheckForOKResponse(); 
 
-	// Set command mode timeout to max value (0x1770)
-	command[0] = 'A';
-	command[1] = 'T';
-	command[2] = 'C';
-	command[3] = 'T'; 
-	command[4] = '0';
-	command[5] = 'x';
-	command[6] = '1';
-	command[7] = '7';
-	command[8] = '7';
-	command[9] = '0';
-	command[10] = 13; // Append carriage return
+	//// Set command mode timeout to max value (0x1770) - No longer used
+	//command[0] = 'A';
+	//command[1] = 'T';
+	//command[2] = 'C';
+	//command[3] = 'T'; 
+	//command[4] = '0';
+	//command[5] = 'x';
+	//command[6] = '1';
+	//command[7] = '7';
+	//command[8] = '7';
+	//command[9] = '0';
+	//command[10] = 13; // Append carriage return
 
-	cout << "Setting command mode timeout to max value... ";
-	nBytesSent = 0;
-	nBytesSent = serial.SendData(command, 11);
-	if (!nBytesSent)
-	{
-		cout << "Error writing to serial port" << endl;
-		WaitForExit();
-	}
-	cout << "done" << endl; 
+	//cout << "Setting command mode timeout to max value... ";
+	//nBytesSent = 0;
+	//nBytesSent = serial.SendData(command, 11);
+	//if (!nBytesSent)
+	//{
+	//	cout << "Error writing to serial port" << endl;
+	//	WaitForExit();
+	//}
+	//cout << "done" << endl; 
 
-	CheckForOKResponse(); 
+	//CheckForOKResponse(); 
 
-	ApplyChangeCommand(); 
+	//ApplyChangeCommand(); 
 
 
 
@@ -131,7 +131,7 @@ void SetAPIMode(void)
 		cout << "Error writing to serial port" << endl;
 		WaitForExit();
 	}
-	cout << "done." << endl;
+	cout << "done.	";
 
 
 	CheckForOKResponse();
@@ -155,13 +155,13 @@ void CheckForOKResponse(void)
 		if (nBytesRead >= 3)
 		{
 			cout << response[0] << response[1] << endl;
-			break;
+			return;
 		}
 		Sleep(100); // Only pull every 100 ms
 	}
 	if (!nBytesRead)
 	{
-		cout << "Error reading from serial port" << endl;
+		cout << "Error checking for OK response" << endl;
 		WaitForExit();
 	}
 }
@@ -186,7 +186,7 @@ void ApplyChangeCommand(void)
 		cout << "Error writing to serial port" << endl;
 		WaitForExit();
 	}
-	cout << "done." << endl;
+	cout << "done.	";
 
 	CheckForOKResponse(); 
 }
@@ -210,7 +210,7 @@ void ExitCommandMode (void)
 		cout << "Error writing to serial port" << endl;
 		WaitForExit();
 	}
-	cout << "done." << endl;
+	cout << "done.	";
 
 	CheckForOKResponse();
 }
@@ -267,6 +267,10 @@ void GetHostMAC(void)
 				cout << hex << uppercase << setw(2) << setfill('0') << (int)HostMAC[i] << ":";
 			// Print last one and set format back to decimal
 			cout << hex << uppercase << setw(2) << setfill('0') << (int)HostMAC[7] << dec << endl;
+			// Set Node 0 to this MAC
+			for (i = 0; i < 8; i++)
+				NodeList[0].MAC[i] = HostMAC[i]; 
+
 			return; 
 		}
 		Sleep(100); // Only pull every 100 ms

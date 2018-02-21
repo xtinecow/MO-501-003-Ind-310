@@ -75,6 +75,9 @@ struct TxFrame
 
 ///////////////// Function prototypes
 
+// ComputerProgram.cpp
+void RunProgram(void);
+
 // Commands.c
 char CheckKeyboard(void);
 void WaitForExit(void);
@@ -92,17 +95,20 @@ void GetHostMAC(void);
 
 // Network.cpp
 void NetworkDiscover(void);
+void FindNeighbors(void);
 void SetNetworkID(void);
 void SendTableRequest(int node);
 void WaitForTableFrame(int node); 
 
 // Utilities.cpp
 void ParseNDResponse(char *response, int size);
+void ParseFNResponse(char *response, int size);
 int ConvertHexByteToInt(char* pointer);
 void DisplayNodeList(void); 
 void CalculateRequestChecksum(TxFrame *request);
 void SplitByteArray(unsigned char *src, unsigned char* dest, int size);
 void CombineByteArray(unsigned char *src, unsigned char* dest, int size); 
+void ClearScreen(void);
 
 
 
@@ -110,3 +116,5 @@ void CombineByteArray(unsigned char *src, unsigned char* dest, int size);
 extern CSerial serial;
 extern NodeEntry NodeList[MAX_NUM_NODES]; // List of all the nodes and their tables
 extern unsigned char HostMAC[8]; 
+extern int setupComplete; 
+extern int globalErrorCount; 

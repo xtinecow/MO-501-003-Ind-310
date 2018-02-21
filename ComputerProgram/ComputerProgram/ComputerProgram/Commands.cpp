@@ -25,8 +25,16 @@ char CheckKeyboard(void)
 
 void WaitForExit(void)
 {
+	if (setupComplete)
+	{
+		globalErrorCount++;
+		cout << "Error detected in run time. This is error number " << globalErrorCount << endl; 
+		return; 
+	}
+	else
+		cout << "Setup error detected.";
 	char keyboardCommand;
-	cout << "Error detected. Please press E to exit program" << endl; 
+	cout << " Please press E to exit program" << endl; 
 	while (1)
 	{
 		while (!(keyboardCommand = CheckKeyboard())) {}; // Wait for input
