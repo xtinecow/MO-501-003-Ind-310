@@ -109,7 +109,13 @@ void CalculateRequestChecksum(TxFrame *request);
 void SplitByteArray(unsigned char *src, unsigned char* dest, int size);
 void CombineByteArray(unsigned char *src, unsigned char* dest, int size); 
 void ClearScreen(void);
+std::string GetNameFromMAC(unsigned char* MAC);
 
+
+// TCP.cpp
+int SetupTCPSocket(void);
+void CloseTCPSocket(void);
+void SendNodesToSocket(void);
 
 
 /////////////// Globals

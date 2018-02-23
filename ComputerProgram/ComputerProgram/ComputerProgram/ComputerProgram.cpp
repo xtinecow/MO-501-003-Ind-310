@@ -24,6 +24,10 @@ int main(int argc, char *argv[])
 		cin >> portNum;
 	}
 	 OpenSerialPort(portNum); 
+	 if (!SetupTCPSocket())
+		 WaitForExit();
+
+
 	 SetATCommandMode(); 
 	 ReadFirmwareVersion(); 
 	 GetHostMAC(); 
@@ -39,67 +43,38 @@ int main(int argc, char *argv[])
 	  setupComplete = 1; 
 
 	  // With setup complete, program can attempt to recover from errors by simply starting RunProgram again. 
-		RunProgram(); 
+		 RunProgram(); 
 	  
-	    // Old Keyboard support code
-		//while (1)
-		//{
-		//	while (!(keyboardCommand = CheckKeyboard())) {}; // Wait for input
-		//	if (keyboardCommand == 'E')
-		//	{
-		//		exit(1);
-		//		CloseSerialPort();
-		//	}
-		//	else
-		//	{
-		//		SetATCommandMode();
-		//		FindNeighbors();
-		//		Sleep(3000); // Give it some time to settle (not sure why but this seems to be needed) 
-		//		SetATCommandMode();
-		//		SetAPIMode();
-		//		ExitCommandMode();
-		//		SendTableRequest(1); // Use 'A' to send a table request
-		//		WaitForTableFrame(1); 
-		//		DisplayNodeList(); 
-
-
-		//		keyboardCommand = 0;
-		//		Sleep(100); // Delay for a bit
-		//	}
-		//}
+	      // Old Keyboard support code
+#if 0
+		while (1)
+		{
+			while (!(keyboardCommand = CheckKeyboard())) {}; // Wait for input
+			if (keyboardCommand == 'E')
+			{
+				exit(1);
+				CloseSerialPort();
+			}
+			else
+			{
+				SendNodesToSocket(); 
+				keyboardCommand = 0;
+				Sleep(100); // Delay for a bit
+			}
+		}
+#endif
 
 
 }
 
-
+#define NUM_STAGES 9
 void RunProgram(void)
 {
-	int node, i, stage; 
+	int node, i, stage, networkCounter; 
 	static int errCount = 0; 
-	//while (1)
-	//{
-	//	SetATCommandMode();
-	//	FindNeighbors();
-	//	Sleep(4000); // Give it some time to settle (not sure why but this seems to be needed) 
-	//	SetATCommandMode();
-	//	SetAPIMode();
-	//	ExitCommandMode();
-	//	for (node = 1; node < MAX_NUM_NODES; node++)
-	//	{
-	//		// Check MAC address to see if there is a non-zero node
-	//		for (i = 0; i < 8; i++)
-	//		{
-	//			if (NodeList[node].MAC[i] != 0)
-	//			{
-	//				SendTableRequest(node);
-	//				WaitForTableFrame(node);
-	//				break;
-	//			}
-	//		}
-	//	}
-	//}
 
 	stage = 0; 
+	networkCounter = 0; 
 	while (1)
 	{
 		if (globalErrorCount > errCount)
@@ -110,7 +85,7 @@ void RunProgram(void)
 		else
 		{
 			// Move to next stage if no error detected. 
-			if (stage == 7)
+			if (stage == NUM_STAGES)
 				stage = 1; 
 			else
 				stage++; 
@@ -157,6 +132,22 @@ void RunProgram(void)
 
 			case 7:
 				DisplayNodeList();
+				break; 
+
+			case 8:
+				// Upload to TCP socket for positioning algorithm
+				SendNodesToSocket(); 
+				break; 
+
+			case 9: 
+				// Update network every 10 cycles
+				if (networkCounter < 10)
+					networkCounter++; 
+				else
+				{
+					NetworkDiscover(); ;
+					networkCounter = 0; 
+				}
 				break; 
 
 		}

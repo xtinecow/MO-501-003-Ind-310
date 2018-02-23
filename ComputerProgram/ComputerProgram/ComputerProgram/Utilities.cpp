@@ -4,7 +4,7 @@ using namespace std;
 void ParseNDResponse(char *response, int size)
 {
 	int node, macByte, numNodes, macIndex; 
-		while (response[0] != 'F')
+		while (response[0] != 'F' && size>0)
 	{
 		response++; // Increment pointer when start of data is off
 		size--; // Discarding first byte so size has to be decreased accordingly
@@ -38,7 +38,7 @@ void ParseNDResponse(char *response, int size)
 void ParseFNResponse(char *response, int size)
 {
 	int node, macByte, numNodes, macIndex;
-	while (response[0] != 'F')
+	while (response[0] != 'F' && size>0)
 	{
 		response++; // Increment pointer when start of data is off
 		size--; // Discarding first byte so size has to be decreased accordingly
@@ -225,4 +225,29 @@ void ClearScreen(void)
 
 	/* Move the cursor home */
 	SetConsoleCursorPosition(hStdOut, homeCoords);
+}
+
+// Compare MAC against known nodes and see if it matches any
+string GetNameFromMAC(unsigned char* MAC)
+{
+	string result;
+
+	// Check for 0 (no node connected)
+	if (MAC[0] == 0 && MAC[1] == 0 && MAC[2] == 0 && MAC[3] == 0 && MAC[4] == 0 && MAC[5] == 0 && MAC[6] == 0 && MAC[7] == 0)
+		return "NoNode"; 
+
+	// First half should always be the same
+	if (MAC[0] != 0x00 || MAC[1] != 0x13 || MAC[2] != 0XA2 || MAC[3] != 0X00)
+		return "Unknown";
+
+	if (MAC[4] == 0x41 && MAC[5] == 0x05 && MAC[6] == 0xE6 && MAC[7] == 0x14)
+		return "Node0";
+
+	if (MAC[4] == 0x41 && MAC[5] == 0x0A && MAC[6] == 0x3A && MAC[7] == 0x93)
+		return "Node1";
+
+	if (MAC[4] == 0x41 && MAC[5] == 0x05 && MAC[6] == 0xE6 && MAC[7] == 0x0E)
+		return "Node2";
+
+	return "Unknown";
 }

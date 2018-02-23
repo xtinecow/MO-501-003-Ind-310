@@ -1,13 +1,11 @@
 // cppClient.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
 
 #include <Windows.h>
-#include "stdafx.h"
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <Iphlpapi.h>
@@ -18,10 +16,8 @@
 
 
 #pragma comment(lib, "Ws2_32.lib")
-#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
-
-#define IPADD "192.168.1.68"
-#define DEFAULT_PORT "8001"
+#define IPADD "192.168.1.103"
+#define DEFAULT_PORT "8002"
 #define DEFAULT_BUFLEN 1024
 
 using namespace std;
