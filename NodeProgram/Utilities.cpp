@@ -5,7 +5,7 @@ void ParseFNResponse(char *response, int size)
 {
     int node,macByte, numNodes, macIndex;
 
-    while (response[0] != 'F')
+    while (response[0] != 'F'&& size>0)
     {
         response++; // Increment pointer when start of data is off
         size--; // Discarding first byte so size has to be decreased accordingly
