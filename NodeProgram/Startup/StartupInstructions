@@ -1,0 +1,23 @@
+Run StartupScript to begin process
+
+This will setup the virtual port to the USB and name it interceptPtty
+It will also call the StartNode script in parallel
+
+The StartNode script will wait for 2 seconds while the interceptPtty is starting up and then start the NodeProgram
+
+The 3 executables in here will be committed on Github because they should not change often. 
+The only one that should change is the NodeProgram if the program changes. 
+
+To make this script run on Startup: 
+
+1. Setup an admin account on the raspberry pi with password 'capstone'. Set the option to always log into this automatically. 
+
+2. Make sure both scripts have permission to be executed
+
+3. Open .profile file from command terminal by using: 
+pluma ~/.profile
+
+4. Add the following line to end of .profile file
+sh ~/path_to_Startup_folder/StartupScript.sh
+
+NodeProgram will now be run off of bootup. Note that the pi won't be able to do anything else. 
