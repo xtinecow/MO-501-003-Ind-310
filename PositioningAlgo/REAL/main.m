@@ -31,9 +31,12 @@ long_o =  -114.125534;
 %% While program is running
 while(1)
     % Get RSSI Data from Node Program
-    payload  = fscanf(NodeSocket); 
-    if(length(payload) > 1)
-        break; 
+    payload = "";
+    while(1)
+        payload  = fscanf(NodeSocket); 
+        if(length(payload) > 1)
+            break; 
+        end
     end
     NodeList = ParseResults (payload);
 
