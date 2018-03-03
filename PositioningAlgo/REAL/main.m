@@ -1,10 +1,10 @@
 %% Open Node Client
-NodeSocket = tcpip('192.168.1.100',8002);
+NodeSocket = tcpip('10.13.183.68',8002);
 NodeSocket.timeout = 2;
 fopen(NodeSocket);
 
 %% Open GUI Client
-guiclient = tcpip('10.13.115.218',8001);
+guiclient = tcpip('10.13.183.68',8001);
 guiclient.timeout = 0.2;
 fopen(guiclient);
 
