@@ -52,10 +52,10 @@ while(1)
     if initializeKalman == false
         [KF_Coords, KF_Cx, KF_dx] = InitializeKF(x_original, targets, dist);
         initializeKalman = true;
-        SentToGui(guiclient, KF_Coords, lat_o, long_o, KF_Cx);
+        SentToGui(roverID, guiclient, KF_Coords, lat_o, long_o, KF_Cx);
     else
         [KF_Coords, KF_Cx, KF_dx] = KalmanFiltering(dist, targets, KF_Coords, KF_Cx, KF_dx, Q);
-        SentToGui(guiclient, KF_Coords, lat_o, long_o, KF_Cx);
+        SentToGui(roverID, guiclient, KF_Coords, lat_o, long_o, KF_Cx);
     end
     
 %     Check for end response
