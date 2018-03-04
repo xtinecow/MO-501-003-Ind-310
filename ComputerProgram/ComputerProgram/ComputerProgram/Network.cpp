@@ -309,7 +309,7 @@ void SetNetworkTimeout(void)
 	command[7] = '0';
 	command[8] = 13; // Add carriage return 
 
-	cout << "Setting network ID to 3.2 sec... ";
+	cout << "Setting network timeout to 3.2 sec... ";
 	nBytesSent = 0;
 	nBytesSent = serial.SendData(command, 9);
 	if (!nBytesSent)
