@@ -14,7 +14,7 @@
 
 #pragma comment(lib, "Ws2_32.lib")
 
-#define IPADD "192.168.1.100"
+#define IPADD "10.13.183.68"
 #define DEFAULT_PORT "8002"
 #define DEFAULT_BUFLEN 1024
 

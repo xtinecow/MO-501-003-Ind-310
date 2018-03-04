@@ -249,5 +249,11 @@ string GetNameFromMAC(unsigned char* MAC)
 	if (MAC[4] == 0x41 && MAC[5] == 0x05 && MAC[6] == 0xE6 && MAC[7] == 0x0E)
 		return "Node2";
 
+	if (MAC[4] == 0x41 && MAC[5] == 0x0A && MAC[6] == 0x3A && MAC[7] == 0x45)
+		return "Node3";
+
+	if (MAC[4] == 0x41 && MAC[5] == 0x05 && MAC[6] == 0xE6 && MAC[7] == 0x0D)
+		return "Node4";
+
 	return "Unknown";
 }

@@ -59,7 +59,7 @@ void NetworkDiscover(void)
 		cout << "Error writing to serial port" << endl;
 		WaitForExit();
 	}
-	timeout = clock() + 14*CLOCKS_PER_SEC; // Give it 10 sec to respond
+	timeout = clock() + 4*CLOCKS_PER_SEC; // Give it 4 sec to respond (timeout is 3.2 sec)
 	nBytesRead = 0;
 	while (clock() < timeout)
 	{
@@ -104,7 +104,7 @@ void FindNeighbors(void)
 		cout << "Error writing to serial port" << endl;
 		WaitForExit();
 	}
-	timeout = clock() + 14 * CLOCKS_PER_SEC; // Give it 10 sec to respond
+	timeout = clock() + 4 * CLOCKS_PER_SEC; // Give it 4 sec to respond (timeout is 3.2 sec)
 	nBytesRead = 0;
 	while (clock() < timeout)
 	{
@@ -136,13 +136,13 @@ void SetNetworkID(void)
 	command[5] = 'x';
 	command[6] = '0';
 	command[7] = '0';
-	command[7] = '0';
-	command[8] = '1';
-	command[9] = 13; // Add carriage return 
+	command[8] = '0';
+	command[9] = '1';
+	command[10] = 13; // Add carriage return 
 
 	cout << "Setting network ID to 0x0001... "; 
 	nBytesSent = 0;
-	nBytesSent = serial.SendData(command, 10);
+	nBytesSent = serial.SendData(command, 11);
 	if (!nBytesSent)
 	{
 		cout << "Error writing to serial port" << endl;
@@ -288,4 +288,40 @@ void WaitForTableFrame(int node)
 
 
 	 cout << "No valid response. Only " << nBytesRead << "bytes read." << endl;
+
+
+}
+
+// Set timeout values for ND and FN commands to 3.2 sec 
+void SetNetworkTimeout(void)
+{
+	char command[12];
+	int nBytesSent;
+	clock_t timeout;
+
+	command[0] = 'A';
+	command[1] = 'T';
+	command[2] = 'N';
+	command[3] = 'T';
+	command[4] = '0';
+	command[5] = 'x';
+	command[6] = '2';
+	command[7] = '0';
+	command[8] = 13; // Add carriage return 
+
+	cout << "Setting network ID to 3.2 sec... ";
+	nBytesSent = 0;
+	nBytesSent = serial.SendData(command, 9);
+	if (!nBytesSent)
+	{
+		cout << "Error writing to serial port" << endl;
+		WaitForExit();
+	}
+	cout << "done" << endl;
+
+	CheckForOKResponse();
+
+	// Apply change
+	ApplyChangeCommand();
+
 }
