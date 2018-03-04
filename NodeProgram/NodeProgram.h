@@ -62,6 +62,7 @@ void FindNeighbors (void);
 void SetNetworkID (void);
 void WaitForNetworkCommand(void);
 void SendTableFrame(int sequence);
+void SetFNTimeout(void);
 
 //Utilities.cpp
 int ConvertHexByteToInt (char* pointer);

@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
     SetATCommandMode();
     GetNodeMAC();
     SetNetworkID();
+    SetFNTimeout();
     FindNeighbors();
 
     std::cout << std::endl << std::endl;
