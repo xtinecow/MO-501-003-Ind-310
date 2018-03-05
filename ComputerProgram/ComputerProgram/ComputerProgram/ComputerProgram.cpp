@@ -24,8 +24,8 @@ int main(int argc, char *argv[])
 		cin >> portNum;
 	}
 	 OpenSerialPort(portNum); 
-	 if (!SetupTCPSocket())
-		 WaitForExit();
+	 //if (!SetupTCPSocket())
+		// WaitForExit();
 
 
 	 SetATCommandMode(); 
@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
 	 GetHostMAC(); 
 
 	 SetNetworkID(); 
+	 SetNetworkTimeout(); 
 	 NetworkDiscover();
 
 	 // Network discover makes command mode time out so need to set it again
@@ -102,7 +103,7 @@ void RunProgram(void)
 				break; 
 
 			case 3: 
-				Sleep(4000); // Give it some time to settle (not sure why but this seems to be needed) 
+				// Sleep(4000); // Give it some time to settle (not sure why but this seems to be needed) 
 		 		SetATCommandMode();
 				break; 
 

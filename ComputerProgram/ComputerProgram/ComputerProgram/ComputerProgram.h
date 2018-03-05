@@ -99,6 +99,7 @@ void FindNeighbors(void);
 void SetNetworkID(void);
 void SendTableRequest(int node);
 void WaitForTableFrame(int node); 
+void SetNetworkTimeout(void);
 
 // Utilities.cpp
 void ParseNDResponse(char *response, int size);

@@ -31,6 +31,13 @@ void ParseNDResponse(char *response, int size)
 			NodeList[node+1].MAC[4 + macByte] = (unsigned char)ConvertHexByteToInt(&response[macIndex]);
 		}
 	}
+
+	// Set remaining nodes to 0
+	for (node = numNodes; node<MAX_NUM_NODES-1; node++)
+	{
+		for (macByte = 0; macByte<8; macByte++)
+			NodeList[node + 1].MAC[macByte] = 0;
+	}
 }
 
 // Same as Parse ND response but stores results for node 0's
@@ -59,6 +66,14 @@ void ParseFNResponse(char *response, int size)
 			NodeList[0].NodeTable[node].MAC[4 + macByte] = (unsigned char)ConvertHexByteToInt(&response[macIndex]);
 			NodeList[0].NodeTable[node].RSSI = (short)ConvertHexByteToInt(&response[node*ND_RESPONSE_SIZE + 46]);
 		}
+	}
+
+	// Set remaining nodes to 0
+	for (node = numNodes; node<MAX_NUM_NODES-1; node++)
+	{
+		for (macByte = 0; macByte<8; macByte++)
+			NodeList[0].NodeTable[node].MAC[macByte] = 0;
+		NodeList[0].NodeTable[node].RSSI = 0;
 	}
 }
 
@@ -248,6 +263,15 @@ string GetNameFromMAC(unsigned char* MAC)
 
 	if (MAC[4] == 0x41 && MAC[5] == 0x05 && MAC[6] == 0xE6 && MAC[7] == 0x0E)
 		return "Node2";
+
+	if (MAC[4] == 0x41 && MAC[5] == 0x0A && MAC[6] == 0x3A && MAC[7] == 0x45)
+		return "Node3";
+
+	if (MAC[4] == 0x41 && MAC[5] == 0x05 && MAC[6] == 0xE6 && MAC[7] == 0x0D)
+		return "Node4";
+
+	if (MAC[4] == 0x41 && MAC[5] == 0x0A && MAC[6] == 0x3A && MAC[7] == 0x99)
+		return "Node5";
 
 	return "Unknown";
 }
