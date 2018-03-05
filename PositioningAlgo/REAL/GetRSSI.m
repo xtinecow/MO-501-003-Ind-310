@@ -1,9 +1,18 @@
-function [ rssi ] = GetRSSI( NodeList, roverID )
+function [ rssi ] = GetRSSI( NodeList, roverID, targetList )
 
 numNodes = size(NodeList, 2);
-for i=1:numNodes-1
-    rssiNode = NodeList(roverID).NeighborTable(i).RSSI;
-    rssi(i) = rssiNode;
+rssi = zeros(size(targetList,1));
+for i=1:numNodes
+    if NodeList(i).name == roverID
+        table = NodeList(i).NeighborTable;
+        for j=1:size(targetList,2)
+            for k=1:size(table,2)
+                if table(k).name == targetList(j)
+                    rssi(j) = table(k).RSSI;
+                end
+            end
+        end
+    end
 end
 
 end

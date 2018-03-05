@@ -11,7 +11,7 @@ fopen(guiclient);
 %% Establish Constants
 
 %RSSI Parsing
-roverID = 1;
+roverID = "Node5";
 
 %RSSI to Distance Conversion Param
 a = -0.69;
@@ -22,7 +22,8 @@ ref = -36.59;
 Q = eye(2,2);
 initializeKalman = false;
 x_original = [0, 1.75]; % Change for the program
-targets = [0, 0; 0, 3.5; 20, 0; 20, 3.5; 30, 1.75];
+targets = [0, 0; 0, 3.5; 20, 0; 20, 3.5; 30, 1.75]; %Change
+targetList = ["Node0", "Node1", "Node2", "Node3", "Node4"]; %Change
 
 %Convert to Lat Long
 lat_o = 51.079948;
@@ -41,7 +42,7 @@ while(1)
     NodeList = ParseResults (payload);
 
     % Parse RSSI Data
-    rssi = GetRSSI(NodeList, roverID);
+    rssi = GetRSSI(NodeList, roverID, targetList);
 
     % Convert RSSI to Distance
     for i = 1:size(rssi,2)
