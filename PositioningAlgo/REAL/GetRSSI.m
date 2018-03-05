@@ -8,7 +8,7 @@ for i=1:numNodes
         for j=1:size(targetList,2)
             for k=1:size(table,2)
                 if table(k).name == targetList(j)
-                    rssi(j) = table(k).RSSI;
+                    rssi(j) = -1 * table(k).RSSI;
                 end
             end
         end
