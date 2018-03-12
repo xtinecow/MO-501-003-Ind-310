@@ -146,7 +146,8 @@ void RunProgram(void)
 					networkCounter++; 
 				else
 				{
-					NetworkDiscover(); ;
+					SetATCommandMode(); 
+					NetworkDiscover();
 					networkCounter = 0; 
 				}
 				break; 
