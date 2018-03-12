@@ -85,7 +85,7 @@
             // 
             // latitude_textBox
             // 
-            this.latitude_textBox.Location = new System.Drawing.Point(1338, 32);
+            this.latitude_textBox.Location = new System.Drawing.Point(1452, 32);
             this.latitude_textBox.Name = "latitude_textBox";
             this.latitude_textBox.Size = new System.Drawing.Size(100, 20);
             this.latitude_textBox.TabIndex = 4;
@@ -93,7 +93,7 @@
             // 
             // longitude_textBox
             // 
-            this.longitude_textBox.Location = new System.Drawing.Point(1338, 58);
+            this.longitude_textBox.Location = new System.Drawing.Point(1452, 58);
             this.longitude_textBox.Name = "longitude_textBox";
             this.longitude_textBox.Size = new System.Drawing.Size(100, 20);
             this.longitude_textBox.TabIndex = 5;
@@ -101,7 +101,7 @@
             // 
             // error_textBox
             // 
-            this.error_textBox.Location = new System.Drawing.Point(1338, 85);
+            this.error_textBox.Location = new System.Drawing.Point(1452, 85);
             this.error_textBox.Name = "error_textBox";
             this.error_textBox.Size = new System.Drawing.Size(100, 20);
             this.error_textBox.TabIndex = 6;
@@ -110,7 +110,7 @@
             // latitude_label
             // 
             this.latitude_label.AutoSize = true;
-            this.latitude_label.Location = new System.Drawing.Point(1280, 32);
+            this.latitude_label.Location = new System.Drawing.Point(1394, 32);
             this.latitude_label.Name = "latitude_label";
             this.latitude_label.Size = new System.Drawing.Size(45, 13);
             this.latitude_label.TabIndex = 7;
@@ -120,7 +120,7 @@
             // longitude_label
             // 
             this.longitude_label.AutoSize = true;
-            this.longitude_label.Location = new System.Drawing.Point(1280, 61);
+            this.longitude_label.Location = new System.Drawing.Point(1394, 61);
             this.longitude_label.Name = "longitude_label";
             this.longitude_label.Size = new System.Drawing.Size(54, 13);
             this.longitude_label.TabIndex = 8;
@@ -130,7 +130,7 @@
             // error_label
             // 
             this.error_label.AutoSize = true;
-            this.error_label.Location = new System.Drawing.Point(1280, 88);
+            this.error_label.Location = new System.Drawing.Point(1394, 88);
             this.error_label.Name = "error_label";
             this.error_label.Size = new System.Drawing.Size(47, 13);
             this.error_label.TabIndex = 9;
@@ -139,7 +139,7 @@
             // 
             // generate_button
             // 
-            this.generate_button.Location = new System.Drawing.Point(1352, 137);
+            this.generate_button.Location = new System.Drawing.Point(1466, 137);
             this.generate_button.Name = "generate_button";
             this.generate_button.Size = new System.Drawing.Size(75, 23);
             this.generate_button.TabIndex = 10;
@@ -175,7 +175,7 @@
             // 
             // error2_textBox
             // 
-            this.error2_textBox.Location = new System.Drawing.Point(1338, 111);
+            this.error2_textBox.Location = new System.Drawing.Point(1452, 111);
             this.error2_textBox.Name = "error2_textBox";
             this.error2_textBox.Size = new System.Drawing.Size(100, 20);
             this.error2_textBox.TabIndex = 12;
@@ -184,7 +184,7 @@
             // longerror_label
             // 
             this.longerror_label.AutoSize = true;
-            this.longerror_label.Location = new System.Drawing.Point(1278, 114);
+            this.longerror_label.Location = new System.Drawing.Point(1392, 114);
             this.longerror_label.Name = "longerror_label";
             this.longerror_label.Size = new System.Drawing.Size(56, 13);
             this.longerror_label.TabIndex = 13;
@@ -193,7 +193,7 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(1338, 6);
+            this.textBox1.Location = new System.Drawing.Point(1452, 6);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(100, 20);
             this.textBox1.TabIndex = 14;
@@ -202,7 +202,7 @@
             // marker_Label
             // 
             this.marker_Label.AutoSize = true;
-            this.marker_Label.Location = new System.Drawing.Point(1280, 9);
+            this.marker_Label.Location = new System.Drawing.Point(1394, 9);
             this.marker_Label.Name = "marker_Label";
             this.marker_Label.Size = new System.Drawing.Size(54, 13);
             this.marker_Label.TabIndex = 15;
@@ -213,7 +213,7 @@
             this.tableGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.tableGridView.Location = new System.Drawing.Point(760, 0);
             this.tableGridView.Name = "tableGridView";
-            this.tableGridView.Size = new System.Drawing.Size(503, 584);
+            this.tableGridView.Size = new System.Drawing.Size(626, 584);
             this.tableGridView.TabIndex = 16;
             this.tableGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.tableGridView_CellContentClick);
             // 
@@ -222,7 +222,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(1434, 625);
+            this.ClientSize = new System.Drawing.Size(1364, 625);
             this.Controls.Add(this.tableGridView);
             this.Controls.Add(this.marker_Label);
             this.Controls.Add(this.textBox1);

@@ -68,11 +68,11 @@ namespace Indoor_Positioning_GUI
             gMap.Overlays.Add(markers);
 
             dataTable.Columns.Add("ID");
-            dataTable.Columns.Add("Lat");
-            dataTable.Columns.Add("Long");
-            dataTable.Columns.Add("Lat Error");
-            dataTable.Columns.Add("Long Error");
-
+            dataTable.Columns.Add("Latitude");
+            dataTable.Columns.Add("Longitude");
+            dataTable.Columns.Add("Error 1 (m)");
+            dataTable.Columns.Add("Error 2 (m)");
+            dataTable.Columns.Add("Theta (rad)");
 
             tableGridView.AutoGenerateColumns = true;
             source.DataSource = dataTable;
@@ -179,10 +179,11 @@ namespace Indoor_Positioning_GUI
                     String temp = rData["ID"].ToString();
                     if ((temp.Contains(marker_List[i].getMarkerID())))
                     {
-                        rData["Lat"] = marker_List[i].getLatitude();
-                        rData["Long"] = marker_List[i].getLongitude();
-                        rData["Lat Error"] = marker_List[i].getXerror();
-                        rData["Long Error"] = marker_List[i].getYerror();
+                        rData["Latitude"] = marker_List[i].getLatitude();
+                        rData["Longitude"] = marker_List[i].getLongitude();
+                        rData["Error 1 (m)"] = marker_List[i].getXerror();
+                        rData["Error 2 (m)"] = marker_List[i].getYerror();
+                        rData["Theta (rad)"] = marker_List[i].geterrAngle();
                         updated = true;
                         
                     }
@@ -194,11 +195,11 @@ namespace Indoor_Positioning_GUI
                 {
                     DataRow newRow = dataTable.NewRow();
                     newRow["ID"] = marker_List[i].getMarkerID();
-                    newRow["Lat"] = marker_List[i].getLatitude();
-                    newRow["Long"] = marker_List[i].getLongitude();
-                    newRow["Lat Error"] = marker_List[i].getXerror();
-                    newRow["Long Error"] = marker_List[i].getYerror();
-
+                    newRow["Latitude"] = marker_List[i].getLatitude();
+                    newRow["Longitude"] = marker_List[i].getLongitude();
+                    newRow["Error 1 (m)"] = marker_List[i].getXerror();
+                    newRow["Error 2 (m)"] = marker_List[i].getYerror();
+                    newRow["Theta (rad)"] = marker_List[i].geterrAngle();
                     dataTable.Rows.Add(newRow);
                     
                 }
@@ -214,7 +215,7 @@ namespace Indoor_Positioning_GUI
             double seg = Math.PI * 2 / 1000;
             double a = longError / 111111;
             double b = latError / 111111;
-            Console.WriteLine("a: " + a + " b: " + b+ "angle: " + angle);
+            
             for (int i = 0; i < 1000; i++)
             {
                 double theta = seg * i;      
