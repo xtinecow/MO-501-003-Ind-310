@@ -1,0 +1,15 @@
+C:\Users\Dylan\Documents\Capstone\GUI\Main Build\Rev0\Rev0H\Indoor_Positioning_GUI\Indoor_Positioning_GUI\obj\Release\Indoor_Positioning_GUI.csprojResolveAssemblyReference.cache
+C:\Users\Dylan\Documents\Capstone\GUI\Main Build\Rev0\Rev0H\Indoor_Positioning_GUI\Indoor_Positioning_GUI\obj\Release\Indoor_Positioning_GUI.Form1.resources
+C:\Users\Dylan\Documents\Capstone\GUI\Main Build\Rev0\Rev0H\Indoor_Positioning_GUI\Indoor_Positioning_GUI\obj\Release\Indoor_Positioning_GUI.Properties.Resources.resources
+C:\Users\Dylan\Documents\Capstone\GUI\Main Build\Rev0\Rev0H\Indoor_Positioning_GUI\Indoor_Positioning_GUI\obj\Release\Indoor_Positioning_GUI.csproj.GenerateResource.Cache
+C:\Users\Dylan\Documents\Capstone\GUI\Main Build\Rev0\Rev0H\Indoor_Positioning_GUI\Indoor_Positioning_GUI\obj\Release\Indoor_Positioning_GUI.csproj.CoreCompileInputs.cache
+C:\Users\Dylan\Documents\Capstone\GUI\Main Build\Rev0\Rev0H\Indoor_Positioning_GUI\Indoor_Positioning_GUI\bin\Release\Indoor_Positioning_GUI.exe.config
+C:\Users\Dylan\Documents\Capstone\GUI\Main Build\Rev0\Rev0H\Indoor_Positioning_GUI\Indoor_Positioning_GUI\bin\Release\Indoor_Positioning_GUI.exe
+C:\Users\Dylan\Documents\Capstone\GUI\Main Build\Rev0\Rev0H\Indoor_Positioning_GUI\Indoor_Positioning_GUI\bin\Release\Indoor_Positioning_GUI.pdb
+C:\Users\Dylan\Documents\Capstone\GUI\Main Build\Rev0\Rev0H\Indoor_Positioning_GUI\Indoor_Positioning_GUI\bin\Release\GMap.NET.Core.dll
+C:\Users\Dylan\Documents\Capstone\GUI\Main Build\Rev0\Rev0H\Indoor_Positioning_GUI\Indoor_Positioning_GUI\bin\Release\GMap.NET.WindowsForms.dll
+C:\Users\Dylan\Documents\Capstone\GUI\Main Build\Rev0\Rev0H\Indoor_Positioning_GUI\Indoor_Positioning_GUI\bin\Release\Google.Maps.dll
+C:\Users\Dylan\Documents\Capstone\GUI\Main Build\Rev0\Rev0H\Indoor_Positioning_GUI\Indoor_Positioning_GUI\bin\Release\Newtonsoft.Json.dll
+C:\Users\Dylan\Documents\Capstone\GUI\Main Build\Rev0\Rev0H\Indoor_Positioning_GUI\Indoor_Positioning_GUI\bin\Release\Newtonsoft.Json.xml
+C:\Users\Dylan\Documents\Capstone\GUI\Main Build\Rev0\Rev0H\Indoor_Positioning_GUI\Indoor_Positioning_GUI\obj\Release\Indoor_Positioning_GUI.exe
+C:\Users\Dylan\Documents\Capstone\GUI\Main Build\Rev0\Rev0H\Indoor_Positioning_GUI\Indoor_Positioning_GUI\obj\Release\Indoor_Positioning_GUI.pdb
