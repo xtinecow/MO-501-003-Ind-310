@@ -463,7 +463,7 @@ namespace Indoor_Positioning_GUI
             try
             {
                
-                IPAddress ipAddress = IPAddress.Parse("10.13.115.218");
+                IPAddress ipAddress = IPAddress.Parse("10.13.101.210");
               
                 TcpListener tcpListener = new TcpListener(ipAddress, 8001);
                 

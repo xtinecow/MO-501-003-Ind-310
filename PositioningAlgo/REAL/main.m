@@ -1,17 +1,17 @@
 %% Open Node Client
-NodeSocket = tcpip('10.13.183.68',8002);
+NodeSocket = tcpip('192.168.56.1',8002);
 NodeSocket.timeout = 2;
 fopen(NodeSocket);
 
 %% Open GUI Client
-guiclient = tcpip('10.13.183.68',8001);
+guiclient = tcpip('192.168.56.1',8001);
 guiclient.timeout = 0.2;
 fopen(guiclient);
 
 %% Establish Constants
 
 %RSSI Parsing
-roverID = "Node5";
+roverID = "Node4";
 
 %RSSI to Distance Conversion Param
 a = -0.69;
@@ -21,9 +21,9 @@ ref = -36.59;
 %Kalman Filter Param
 Q = eye(2,2);
 initializeKalman = false;
-x_original = [0, 1.75]; % Change for the program
-targets = [0, 0; 0, 3.5; 20, 0; 20, 3.5; 30, 1.75]; %Change
-targetList = ["Node0", "Node1", "Node2", "Node3", "Node4"]; %Change
+x_original = [6.7, 5.1]; % Change for the program
+targets = [0, 0; 0, 9.10; 14.9, 8.2; 14.9, 2.5; 6.7, 0]; %Change
+targetList = ["Node1", "Node0", "Node3", "Node5", "Node2"]; %Change
 
 %Convert to Lat Long
 lat_o = 51.079948;
@@ -49,7 +49,7 @@ while(1)
     
     % Get Clock time
     c = clock;
-    time = strcat(num2str(c(1,4)), num2str(c(1,5)), num2str(c(1,6)));
+    time = convertCharsToStrings(strcat(num2str(c(1,4)), ':', num2str(c(1,5)), ':', num2str(c(1,6))));
     
     % Parse RSSI Data
     rssi = GetRSSI(NodeList, roverID, targetList);
@@ -70,22 +70,19 @@ while(1)
     % Kalman Filter
     if initializeKalman == false
         [KF_Coords, KF_Cx, KF_dx] = InitializeKF(x_original, targets, dist);
-        kalman_coords = [kalman_coords; [time, KF_Coords]];
-        kalman_delta = [kalman_delta; [time, KF_dx']];
+        kalman_coords = [kalman_coords; [time, KF_Coords(1,1), KF_Coords(1,2)]];
+        kalman_delta = [kalman_delta; [time, KF_dx(1,1), KF_dx(2,1)]];
         initializeKalman = true;
-        SentToGui(roverID, guiclient, KF_Coords, lat_o, long_o, KF_Cx, targets, targetList);
+        terminate = SentToGui(roverID, guiclient, KF_Coords, lat_o, long_o, KF_Cx, targets, targetList);
     else
         [KF_Coords, KF_Cx, KF_dx] = KalmanFiltering(dist, targets, KF_Coords, KF_Cx, KF_dx, Q);
-        kalman_coords = [kalman_coords; [time, KF_Coords]];
-        kalman_delta = [kalman_delta; [time, KF_dx']];
-        SentToGui(roverID, guiclient, KF_Coords, lat_o, long_o, KF_Cx, targets, targetList);
+        kalman_coords = [kalman_coords; [time, KF_Coords(1,1), KF_Coords(1,2)]];
+        kalman_delta = [kalman_delta; [time, KF_dx(1,1), KF_dx(2,1)]];
+        terminate = SentToGui(roverID, guiclient, KF_Coords, lat_o, long_o, KF_Cx, targets, targetList);
     end
     
 %     Check for end response
-    check = fscanf(guiclient, '%s');
-    checkResponse = contains(check, 'DONE');
-    flushinput(guiclient);
-    if(checkResponse) 
+    if(terminate) 
         break; 
     end
 
@@ -102,8 +99,19 @@ fclose(guiclient);
 delete(guiclient);
 clear guiclient
 
-%% Print to CSV
-csvwrite('RawRssi.csv',raw_rssi);
-csvwrite('ConvertedDist.csv', conv_dist);
-csvwrite('Coordinates.csv', kalman_coord);
-csvwrite('Delta.csv', kalman_delta);
+%% Print to File
+RawRssi = fopen('RawRssi.txt', 'w');
+fprintf(RawRssi, '%s,%s,%s\n', raw_rssi');
+fclose(RawRssi);
+
+ConvertedDist = fopen('ConvertedDist.txt','w');
+fprintf(ConvertedDist, '%s,%s,%s\n', conv_dist');
+fclose(ConvertedDist);
+
+Coordinates = fopen('Coordinates.txt','w');
+fprintf(Coordinates, '%s,%s,%s\n', kalman_coords');
+fclose(Coordinates);
+
+Delta = fopen('Delta.txt','w');
+fprintf(Delta, '%s,%s,%s\n', kalman_delta');
+fclose(Delta);
