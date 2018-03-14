@@ -11,3 +11,7 @@ ComputerProgram/ComputerProgram/.vs/ComputerProgram/v15/Browse.VC.db
 *.pdb
 *.ilk
 ComputerProgram/ComputerProgram/Debug/ComputerProgram.exe
+Code_for_Post_Processing/ConvertedDist.txt
+Code_for_Post_Processing/Coordinates.txt
+Code_for_Post_Processing/Delta.txt
+Code_for_Post_Processing/RawRssi.txt
