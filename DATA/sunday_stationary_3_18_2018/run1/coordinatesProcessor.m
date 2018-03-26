@@ -30,9 +30,20 @@ figure('Name','Y Coordinate Error.');
 plot(timeIndex,yCoordError);
 xlim([0 length(yCoordError)]);
 
+
+
+
+
+
+
 figure('Name','Coordinate error');
 scatter(xCoordError,yCoordError); hold on;
-scatter(0,0,'r','*');
+scatter(0,0,'r','*'); hold on;
+t = linspace(-10,10,1000);
+circx = 5*cos(t);
+circy = 5*sin(t);
+plot(circx,circy);
+
 
 figure('Name','X Coordinate Error Histogram');
 histogram(xCoordError,25);
@@ -40,14 +51,10 @@ histogram(xCoordError,25);
 figure('Name','Y Coordinate Error Histogram');
 histogram(yCoordError,25);
 
-figure('Name','X Coordinate Histogram');
-histogram(xCoord,25);
-
-figure('Name','Y Coordinate Histogram');
-histogram(yCoord,25);
 
 xCoordErrorSTD = std2(xCoordError)
 xCoordErrorVAR = var(xCoordError)
 
 yCoordErrorSTD = std2(yCoordError)
 yCoordErrorVAR = var(yCoordError)
+
