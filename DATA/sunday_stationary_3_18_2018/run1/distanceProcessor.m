@@ -84,6 +84,13 @@ p5 = plot(timeIndex,distanceErrorToNode5,'c');
 legend([p1 p2 p3 p4 p5],'distanceError to node 0','distanceError to node 1','distanceError to node 2','distanceError to node 3','distanceError to node 5');
 xlim([0 length(distanceErrorToNode5)]);
 
+figure('Name','Distance error histograms');
+h1 = histogram(distanceErrorToNode0,20);hold on;
+h2 = histogram(distanceErrorToNode1,20); hold on;
+h3 = histogram(distanceErrorToNode2,20); hold on;
+h4 = histogram(distanceErrorToNode5,20); hold on;
+h5 = histogram(distanceErrorToNode0,20);
+legend([h1 h2 h3 h4 h5],'node 0','node 1','node 2','node 3','node 5');
 
 distanceToNode0STD = std2(distanceErrorToNode0)
 distanceToNode0VAR = var(distanceErrorToNode0)

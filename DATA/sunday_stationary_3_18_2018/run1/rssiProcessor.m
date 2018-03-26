@@ -10,6 +10,9 @@ rssiToNode3 = 0;
 rssiToNode5 = 0;
 
 for i = 2:length(rssiFileData{1})
+  if (rssiFileData{3}(i) == 0)
+    rssiFileData{3}(i) = NaN;
+  end
   if contains(rssiFileData{2}(i), '0')
    rssiToNode0 = [rssiToNode0 rssiFileData{3}(i)];
   elseif contains(rssiFileData{2}(i), '1')
@@ -63,7 +66,21 @@ p5 = plot(timeIndex,rssiToNode5,'c');
 legend([p1 p2 p3 p4 p5],'RSSI to node 0','RSSI to node 1','RSSI to node 2','RSSI to node 3','RSSI to node 5');
 xlim([0 length(rssiToNode5)]);
 
+figure('Name', 'RSSI Histogram');
+h1 = histogram(rssiToNode0,20); hold on;
+h2 = histogram(rssiToNode1,20); hold on;
+h3 = histogram(rssiToNode2,20); hold on;
+h4 = histogram(rssiToNode3,20); hold on;
+h5 = histogram(rssiToNode5,20);
+legend([h1 h2 h3 h4 h5],'node 0','node 1','node 2','node 3','node 5');
 
+figure('Name', 'RSSI Histogram with fit');
+hf1 = histfit(rssiToNode0,20); hold on;
+hf2 = histfit(rssiToNode1,20); hold on;
+hf3 = histfit(rssiToNode2,20); hold on;
+hf4 = histfit(rssiToNode3,20); hold on;
+hf5 = histfit(rssiToNode5,20);
+legend([hf1(1) hf2(1) hf3(1) hf4(1) hf5(1)],'node 0','node 1','node 2','node 3','node 5');
 
 rssiToNode0STD = std2(rssiToNode0)
 rssiToNode0VAR = var(rssiToNode0)

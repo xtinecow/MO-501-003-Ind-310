@@ -33,6 +33,19 @@ xlim([0 length(yCoordError)]);
 figure('Name','Coordinate error');
 scatter(xCoordError,yCoordError); hold on;
 scatter(0,0,'r','*');
+
+figure('Name','X Coordinate Error Histogram');
+histogram(xCoordError,25);
+
+figure('Name','Y Coordinate Error Histogram');
+histogram(yCoordError,25);
+
+figure('Name','X Coordinate Histogram');
+histogram(xCoord,25);
+
+figure('Name','Y Coordinate Histogram');
+histogram(yCoord,25);
+
 xCoordErrorSTD = std2(xCoordError)
 xCoordErrorVAR = var(xCoordError)
 
