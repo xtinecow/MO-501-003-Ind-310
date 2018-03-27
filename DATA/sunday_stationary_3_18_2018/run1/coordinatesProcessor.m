@@ -39,18 +39,25 @@ xlim([0 length(yCoordError)]);
 figure('Name','Coordinate error');
 scatter(xCoordError,yCoordError); hold on;
 scatter(0,0,'r','*'); hold on;
+title('Coordinate Error Plot');
+xlabel('X Coordinate Error (m)');
+ylabel('Y Coordinate Error (m)');
 t = linspace(-10,10,1000);
+
 circx = 5*cos(t);
 circy = 5*sin(t);
 plot(circx,circy);
+legend('Coordinate Error','Actual Position','5m Error Boundary');
+set(gca,'XTick',-10:1:10);
+set(gca,'YTick',-10:1:10);
 
-
-figure('Name','X Coordinate Error Histogram');
-histogram(xCoordError,25);
-
-figure('Name','Y Coordinate Error Histogram');
-histogram(yCoordError,25);
-
+figure('Name','Coordinate Error Histograms');
+subplot(2,1,1), histogram(xCoordError,40), title('X Coordinate Error Histogram'); xlabel('Error (m)');ylabel('Frequency');
+set(gca,'XTick',-10:1:10);
+set(gca,'YTick',0:5:100);
+subplot(2,1,2), histogram(yCoordError,40); title('Y Coordinate Error Histogram'); xlabel('Error (m)');ylabel('Frequency');
+set(gca,'XTick',-10:1:10);
+set(gca,'YTick',0:5:100);
 
 xCoordErrorSTD = std2(xCoordError)
 xCoordErrorVAR = var(xCoordError)
