@@ -65,3 +65,29 @@ xCoordErrorVAR = var(xCoordError)
 yCoordErrorSTD = std2(yCoordError)
 yCoordErrorVAR = var(yCoordError)
 
+count = 0;
+for i=1:length(xCoordError)
+if(((xCoordError(i) < 5.0) && (yCoordError(i) < 5.0)) && ((xCoordError(i) > -5.0) && (yCoordError(i) >  -5.0)))
+count = count+1;
+end
+end
+
+percentWithin5 = (count/length(xCoordError))*100
+
+count2 = 0;
+for i=1:length(xCoordError)
+if(((xCoordError(i) < 6.0) && (yCoordError(i) < 6.0)) && ((xCoordError(i) > -6.0) && (yCoordError(i) >  -6.0)))
+count2 = count2+1;
+end
+end
+
+percentWithin6 = (count2/length(xCoordError))*100
+
+count3 = 0;
+for i=1:length(xCoordError)
+if(((xCoordError(i) < 7.0) && (yCoordError(i) < 7.0)) && ((xCoordError(i) > -7.0) && (yCoordError(i) >  -7.0)))
+count3 = count3+1;
+end
+end
+
+percentWithin7 = (count3/length(xCoordError))*100
